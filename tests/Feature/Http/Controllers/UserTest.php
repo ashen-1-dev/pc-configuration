@@ -23,7 +23,7 @@ class UserTest extends TestCase
                 'last_name' => 'John',
                 'first_name' => 'Doe',
             ];
-        $response = $this->post('/register', $userData);
+        $response = $this->post('/login/register', $userData);
 
         $response->assertStatus(201);
         $response->assertJson([
@@ -40,7 +40,7 @@ class UserTest extends TestCase
                 'last_name' => 'John',
                 'first_name' => 'Doe',
             ];
-        $response = $this->post('/register', $userData);
+        $response = $this->post('/login/register', $userData);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -55,7 +55,7 @@ class UserTest extends TestCase
                 'email' => 'test@example.ru',
                 'password' => '123123',
             ];
-        $response = $this->post('/login', $userData);
+        $response = $this->post('/login/auth', $userData);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -70,7 +70,7 @@ class UserTest extends TestCase
                 'email' => 'test@example.ru',
                 'password' => '1231234',
             ];
-        $response = $this->post('/login', $userData);
+        $response = $this->post('/login/auth', $userData);
 
         $response->assertStatus(200);
         $response->assertJson([
