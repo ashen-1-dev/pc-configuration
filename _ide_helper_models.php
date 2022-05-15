@@ -28,18 +28,18 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User query()
- * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereFirstName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Users\User whereUpdatedAt($value)
  */
 	class User extends \Eloquent {}
 }

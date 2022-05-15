@@ -2,9 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Models\User;
-use Faker\Generator;
-use PHPUnit\Framework\Test;
 use Tests\TestCase;
 
 class UserTest extends TestCase

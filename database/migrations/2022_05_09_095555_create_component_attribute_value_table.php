@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('component_id')->constrained('components');
             $table->foreignId('attribute_id')->constrained('component_attributes');
+            $table->string('value');
             $table->timestamps();
         });
     }
