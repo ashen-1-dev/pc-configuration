@@ -6,11 +6,18 @@ use App\Models\Users\User;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    public function show()
+    {
+        $builds = Auth::user()->builds;
+        return view('user.profile', compact('builds'));
+    }
 
-    public function register(Request $request): \Illuminate\Http\JsonResponse
+
+    public function register(Request $request)
     {
         if(User::where('email', '=', $request->email)->first() != null)
             return response()->json(
@@ -29,14 +36,15 @@ class UserController extends Controller
         $data['password'] = Hash::make($request->password);
         $user = User::create($data);
         $user->save();
-        return response()->json(
-            [
-                'success' => true,
-                'data' => $data,
-            ], 201);
+        return view('user.index');
+//        return response()->json(
+//            [
+//                'success' => true,
+//                'data' => $data,
+//            ], 201);
     }
 
-    public function login(Request $request): \Illuminate\Http\JsonResponse
+    public function login(Request $request)
     {
         $credentials = $request->validate(
             [
@@ -47,11 +55,7 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             $user = User::where('email', '=', $credentials['email'])->first();
             Auth::login($user);
-            return response()->json(
-                [
-                    'success' => true,
-                    'data' => 'Success login'
-                ]);
+            return redirect()->route('profile');
         }
 
         return response()->json(
@@ -59,5 +63,12 @@ class UserController extends Controller
                 'success' => false,
                 'data' => 'Failed login'
             ]);
+    }
+
+    public function logout()
+    {
+        Session::flush();
+        Auth::logout();
+        return redirect()->route('welcome');
     }
 }

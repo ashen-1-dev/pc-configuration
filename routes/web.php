@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Components\Component;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
@@ -14,13 +15,18 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function(){
     return view('welcome');
-});
+})->name('welcome');
 Route::prefix('login')->group(function () {
-    Route::view('', 'login');
+    Route::view('', 'login')->name('login-view');
     Route::post('/auth', [UserController::class, 'login'])->name('login');
     Route::post('/register', [UserController::class, 'register'])->name('register');
 });
+Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+
+Route::get('/profile', [UserController::class, 'show'])->name('profile')->middleware('auth');
+
+Route::resource('components', Component::class);
 
 

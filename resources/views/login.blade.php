@@ -33,8 +33,8 @@
             <h2>Имя</h2>
             <input type="text" name="first_name" id="first_name">
 
-            <h2>Номер группы</h2>
-            <input type="text" name="group" id="group">
+{{--            <h2>Номер группы</h2>--}}
+{{--            <input type="text" name="group" id="group">--}}
 
             <button class="btn btn-medium" type="submit">Зарегистрироваться</button>
         </form>

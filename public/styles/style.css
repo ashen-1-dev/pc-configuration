@@ -28,19 +28,24 @@ nav {
     padding-bottom: 15px;
 }
 
-nav a {
+nav a, p {
     margin-left: 43px;
     font-weight: normal;
     line-height: 23px;
 }
 
-a {
+a, .user-profile {
     text-decoration: none;
     color: #FFFFFF;
     font-size: 20px;
 }
 
-a.login {
+p.login {
+    color: #FFFFFF;
+    font-size: 20px;
+}
+
+a.login, .user-profile {
   float: right;  
   margin-right: 337px;
 }
@@ -256,7 +261,6 @@ form > h1,h2 {
 
 .component.expanded .btn-small {
     float: right;
-    margin-right: 6px;
     margin-right: 51px;
     font-size: 14px;
     text-align: center;
@@ -276,6 +280,17 @@ form > h1,h2 {
 .component-data {
     display: none;
     cursor: default;
+}
+.user-builds-container {
+    position: relative;
+    top: 20vh;
+    left: 20vw;
+}
+.user-builds {
+
+}
+
+.user-builds h1 {
 }
 
 .test {

@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Components\Type as ComponentType;
+use App\Services\Component\ComponentTypeEnum;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,6 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $component_types = ComponentTypeEnum::cases();
+        foreach ($component_types as $component_type) {
+            ComponentType::create(['name' => $component_type->value])->save();
+        }
+
     }
 }
