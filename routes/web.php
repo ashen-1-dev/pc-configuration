@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Components\Component;
+
+use App\Http\Controllers\ComponentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
@@ -27,6 +28,6 @@ Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 
 Route::get('/profile', [UserController::class, 'show'])->name('profile')->middleware('auth');
 
-Route::resource('components', Component::class);
+Route::resource('components', ComponentController::class)->middleware('auth');
 
 

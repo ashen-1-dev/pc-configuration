@@ -5,9 +5,9 @@
 @section('content')
     <div class="login-container">
         <h1>Авторизaция</h1>
-        <form action="/login/auth" method="post">
+        <form action="{{URL::route('login', [], false)}}" method="post">
             @csrf
-            <h2>Почтовый адресс</h2>
+            <h2>Почтовый адрес</h2>
             <input type="text" name="email" id="email">
             <h2>Пароль</h2>
             <input type="password" name="password" id="password">
@@ -19,7 +19,7 @@
     <div class="auth-container">
         <h1>Впервые на сайте?</h1>
         <h2 style="text-align: center;">Пройдите регистрацию</h2>
-        <form action="/login/register" method="post">
+        <form action="{{URL::route('login', [], false)}}" method="post">
             @csrf
             <h2>Почтовый адрес</h2>
             <input type="text" name="email" id="email">

@@ -12,6 +12,7 @@
     @include('includes.header')
     <main>
         @yield('content')
+        <script src="{{asset('js/script.js')}}"></script>
     </main>
 </body>
 </html>
