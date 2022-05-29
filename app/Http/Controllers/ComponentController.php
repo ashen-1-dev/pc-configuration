@@ -66,9 +66,29 @@ class ComponentController extends Controller
 
     public function update(Request $request, $id)
     {
+        $data = $request->validate(
+            [
+                'name' => ['required'],
+                'type_id' => ['required'],
+            ]
+        );
+        $component = Component::find($id);
+        $component->name = $data['name'];
+        $component->type_id = $data['type_id'];
+        $component->save();
+        if($request->has('attributes')) {
+            $component->attributes()->delete(); // deleting old atr and insert new one
+            $attributes = $request->input('attributes');
+            foreach ($attributes as $attribute) {
+                $newAttribute = Attribute::create(['name' => $attribute['name']]);
+                $newAttribute->save();
+                $component->attributes()->attach($newAttribute, ['value' => $attribute['value']]);
+                // TODO: добавить валидацию аттрибутов и их значений
+            }
 
+        }
+        return view('component.show', compact('component'));
     }
-
 
     public function destroy($id)
     {

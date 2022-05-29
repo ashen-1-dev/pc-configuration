@@ -36,7 +36,7 @@ class UserController extends Controller
         $data['password'] = Hash::make($request->password);
         $user = User::create($data);
         $user->save();
-        return view('user.index');
+        return view('user.profile');
 //        return response()->json(
 //            [
 //                'success' => true,

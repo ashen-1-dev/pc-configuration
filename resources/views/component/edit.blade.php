@@ -5,8 +5,9 @@
 @section('content')
     <div class="container">
         <h1>Изменить компонент</h1>
-        <form action="{{URL::route('components.store', [], false)}}" method="post">
+        <form action="{{URL::route('components.update', $component->id, false)}}" method="post">
             @csrf
+            @method('put')
             <h2>Название компонента</h2>
             <input name="name" id="name" value="{{$component->name}}">
             <h2>Тип компонента</h2>

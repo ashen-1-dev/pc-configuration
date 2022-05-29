@@ -19,7 +19,7 @@
     <div class="auth-container">
         <h1>Впервые на сайте?</h1>
         <h2 style="text-align: center;">Пройдите регистрацию</h2>
-        <form action="{{URL::route('login', [], false)}}" method="post">
+        <form action="{{URL::route('register', [], false)}}" method="post">
             @csrf
             <h2>Почтовый адрес</h2>
             <input type="text" name="email" id="email">

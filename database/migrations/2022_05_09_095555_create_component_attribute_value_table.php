@@ -15,8 +15,12 @@ return new class extends Migration
     {
         Schema::create('component_attribute_value', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('component_id')->constrained('components');
-            $table->foreignId('attribute_id')->constrained('component_attributes');
+            $table->foreignId('component_id')
+                ->constrained('components')
+                ->cascadeOnDelete();
+            $table->foreignId('attribute_id')
+                ->constrained('component_attributes')
+                ->cascadeOnDelete();
             $table->string('value');
             $table->timestamps();
         });

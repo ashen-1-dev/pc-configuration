@@ -7,7 +7,6 @@
         <h1>Добавить новый компонент</h1>
         <form action="{{URL::route('components.store', [], false)}}" method="post">
             @csrf
-            @method('put')
             <h2>Название компонента</h2>
             <input name="name" id="name">
             <h2>Тип компонента</h2>
