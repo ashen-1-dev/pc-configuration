@@ -1,0 +1,9 @@
+@import '~antd/dist/antd.min.css';
+
+.h100 {
+	height: calc(100vh - 64px);
+}
+
+.center-text {
+	text-align: center;
+}
