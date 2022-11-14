@@ -1,0 +1,27 @@
+.wrapper {
+    padding: 0 25rem;
+    border: 1px solid #1d79e2;
+}
+
+.component-item {
+    min-height: 2rem;
+}
+
+.component-item > * {
+    margin: auto 0;
+}
+
+.delete-component-icon-container {
+    display: flex;
+    border-radius: 25px;
+    width: 2rem;
+    height: 2rem;
+}
+
+.delete-component-icon-container > * {
+    margin: auto;
+}
+
+.delete-component-icon-container:hover {
+    background-color: #1d79e2;
+}

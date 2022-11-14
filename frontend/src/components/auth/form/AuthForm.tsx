@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import { Button, Form, Input } from 'antd';
-import { rules } from '../../utils/form/rules';
+import React, {FC} from 'react';
+import {Button, Form, Input} from 'antd';
+import {rules} from '../../../utils/form/rules';
 
 const AuthForm: FC = () => {
 	const onFinish = (values: any) => {
@@ -9,11 +9,11 @@ const AuthForm: FC = () => {
 	return (
 		<Form name="register" onFinish={onFinish}>
 			<Form.Item label="Логин" name="login" rules={[rules.required()]}>
-				<Input />
+				<Input/>
 			</Form.Item>
 
 			<Form.Item label={'Почта'} name="email" rules={[rules.required()]}>
-				<Input type={'email'} />
+				<Input type={'email'}/>
 			</Form.Item>
 
 			<Form.Item
@@ -21,9 +21,9 @@ const AuthForm: FC = () => {
 				name="password"
 				rules={[rules.required()]}
 			>
-				<Input.Password />
+				<Input.Password/>
 			</Form.Item>
-			<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+			<Form.Item wrapperCol={{offset: 8, span: 16}}>
 				<Button
 					shape={'round'}
 					size={'large'}

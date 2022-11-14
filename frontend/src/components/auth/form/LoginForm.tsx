@@ -1,6 +1,6 @@
-import { Button, Checkbox, Form, Input } from 'antd';
+import {Button, Checkbox, Form, Input} from 'antd';
 import React from 'react';
-import { rules } from '../../utils/form/rules';
+import {rules} from '../../../utils/form/rules';
 
 const LoginForm: React.FC = () => {
 	const onFinish = (values: any) => {
@@ -10,11 +10,11 @@ const LoginForm: React.FC = () => {
 	return (
 		<Form
 			name="login"
-			initialValues={{ remember: true }}
+			initialValues={{remember: true}}
 			onFinish={onFinish}
 		>
 			<Form.Item label="Логин" name="login" rules={[rules.required()]}>
-				<Input />
+				<Input/>
 			</Form.Item>
 
 			<Form.Item
@@ -22,14 +22,14 @@ const LoginForm: React.FC = () => {
 				name="password"
 				rules={[rules.required()]}
 			>
-				<Input.Password />
+				<Input.Password/>
 			</Form.Item>
 
 			<Form.Item name="remember" valuePropName="checked">
 				<Checkbox>Запомнить</Checkbox>
 			</Form.Item>
 
-			<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+			<Form.Item wrapperCol={{offset: 8, span: 16}}>
 				<Button
 					shape={'round'}
 					size={'large'}
