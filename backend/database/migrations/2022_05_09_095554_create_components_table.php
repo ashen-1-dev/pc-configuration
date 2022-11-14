@@ -17,7 +17,10 @@ return new class extends Migration {
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('photo_url', 300)->nullable();
-            $table->foreignId('type_id')->constrained('component_types');
+            $table->foreignId('type_id')
+                ->nullable()
+                ->constrained('component_types')
+                ->nullOnDelete();
             $table->timestamps();
         });
     }

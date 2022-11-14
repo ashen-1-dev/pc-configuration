@@ -26,4 +26,9 @@ class Type extends Model
     {
         return $this->hasMany(Component::class);
     }
+
+    public function requiredAttributes()
+    {
+        return $this->hasMany(RequiredAttribute::class, 'component_type_id');
+    }
 }

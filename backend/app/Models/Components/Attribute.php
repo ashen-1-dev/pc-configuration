@@ -23,12 +23,13 @@ class Attribute extends Model
 
     protected $table = 'component_attributes';
     protected $fillable = [
-        'name'
+        'name',
+        'value',
+        'component_id'
     ];
 
     public function components()
     {
-        return $this->belongsTo(Component::class);
+        return $this->belongsTo(Component::class, 'component_id', 'id');
     }
-
 }

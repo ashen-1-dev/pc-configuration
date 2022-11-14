@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Component\dto;
+namespace App\Http\Controllers\Component\dto\Attribute;
 
 use Spatie\LaravelData\Data;
 

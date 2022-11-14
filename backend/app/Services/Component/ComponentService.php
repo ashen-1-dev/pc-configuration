@@ -5,14 +5,16 @@ namespace App\Services\Component;
 use App\Http\Controllers\Component\dto\CreateComponentDto;
 use App\Http\Controllers\Component\dto\GetComponentDto;
 use App\Models\Components\Component;
+use App\Models\Components\Type;
+use App\Services\FileService;
 
 class ComponentService
 {
-    private readonly AttributeService $attributeService;
+    private readonly FileService $fileService;
 
-    public function __construct(AttributeService $attributeService)
+    public function __construct(FileService $fileService)
     {
-        $this->attributeService = $attributeService;
+        $this->fileService = $fileService;
     }
 
     /**
@@ -32,8 +34,26 @@ class ComponentService
 
     public function createComponent(CreateComponentDto $createComponentDto): GetComponentDto
     {
-        $component = Component::create($createComponentDto->toModel());
-        $this->attributeService->createAttributes($component->id, $createComponentDto->attributes);
+        $photoUrl = isset($createComponentDto->photo) ?
+            $this
+                ->fileService
+                ->uploadFile('/components/', $createComponentDto->photo)
+            : null;
+        $typeId = Type::where('name', $createComponentDto->type)->firstOrFail()->id;
+        $component = Component::create($createComponentDto->toModel($typeId, $photoUrl));
+        $component->attributes()->createMany($createComponentDto->attributes->toArray());
+        return GetComponentDto::fromModel($component);
+    }
+
+    public function updateComponent(int $id, CreateComponentDto $createComponentDto): GetComponentDto
+    {
+        //TODO:FIXME
+        $component = Component::findOrFail($id);
+        $component->update($createComponentDto->toArray());
+//        dd($createComponentDto->attributes->toArray());
+//        $createComponentDto
+//            ->attributes
+//            ->map(fn(CreateAttributeDto $x) => $component->attributes()->updateOrCreate($x->toArray()));
         return GetComponentDto::fromModel($component);
     }
 }

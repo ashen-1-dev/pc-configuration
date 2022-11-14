@@ -28,6 +28,7 @@ class Component extends Model
         'name',
         'description',
         'type_id',
+        'photo_url'
     ];
 
     public function builds()

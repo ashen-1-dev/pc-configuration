@@ -16,7 +16,10 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('value');
-            $table->foreignId('component_id')->constrained();
+            $table->unique(['name', 'component_id']);
+            $table->foreignId('component_id')
+                ->constrained()
+                ->cascadeOnDelete();
         });
     }
 

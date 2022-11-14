@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Component\ComponentController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ComponentType\ComponentTypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,8 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 Route::apiResource('components', ComponentController::class);
+
+Route::get('/component-types/{type}/attributes', [ComponentTypeController::class, 'getRequiredAttributes']);
+Route::get('/component-types/', [ComponentTypeController::class, 'index']);
+

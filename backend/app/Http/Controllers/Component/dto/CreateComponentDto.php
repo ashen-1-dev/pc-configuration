@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Component\dto;
 
+use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
@@ -13,27 +14,26 @@ class CreateComponentDto extends Data
 {
     public function __construct(
         #[Required, StringType]
-        public string         $name,
+        public string                 $name,
         #[StringType]
-        public ?string        $description,
-        #[IntegerType]
-        public int            $typeId,
-        #[StringType]
-        public ?string        $photoUrl,
+        public ?string                $description,
+        #[Required, StringType]
+        public string                 $type,
+        public UploadedFile|File|null $photo,
         #[DataCollectionOf(CreateAttributeDto::class)]
-        public DataCollection $attributes,
+        public ?DataCollection        $attributes,
     )
     {
     }
 
-    public function toModel(): array
+    public function toModel(int $typeId, string $photoUrl = null): array
     {
         return [
             'name' => $this->name,
             'description' => $this->description,
-            'type_id' => $this->typeId,
+            'type_id' => $typeId,
             'attributes' => $this->attributes->toArray(),
-            'photo_url' => $this->photoUrl,
+            'photo_url' => $photoUrl,
         ];
     }
 }
