@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Component\dto;
 
 use App\Http\Controllers\Component\dto\Attribute\GetAttributeDto;
-use App\Models\Components\Component;
+use App\Models\Component\Component;
 use App\utils\transformers\InsertDomainUrl;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\WithTransformer;

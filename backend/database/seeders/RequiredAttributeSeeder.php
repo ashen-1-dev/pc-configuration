@@ -9,7 +9,7 @@ use App\Core\Components\RequiredAttributes\RequiredAttributesForGPU as GPU;
 use App\Core\Components\RequiredAttributes\RequiredAttributesForMotherboard as Motherboard;
 use App\Core\Components\RequiredAttributes\RequiredAttributesForPowerSupply as PowerSupply;
 use App\Core\Components\RequiredAttributes\RequiredAttributesForRAM as RAM;
-use App\Models\Components\Type;
+use App\Models\Component\Type;
 use DB;
 use Illuminate\Database\Seeder;
 

@@ -4,7 +4,7 @@ namespace App\Services\ComponentType;
 
 use App\Http\Controllers\Component\dto\Attribute\GetRequiredAttribute;
 use App\Http\Controllers\ComponentType\dto\GetComponentTypeDto;
-use App\Models\Components\Type;
+use App\Models\Component\Type;
 
 class ComponentTypeService
 {

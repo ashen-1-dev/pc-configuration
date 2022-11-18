@@ -2,20 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Components\Component;
+use App\Models\Component\Component;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * App\Models\Build
- *
- * @property-read \Illuminate\Database\Eloquent\Collection|Component[] $components
- * @property-read int|null $components_count
- * @method static \Illuminate\Database\Eloquent\Builder|Build newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Build newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Build query()
- * @mixin \Eloquent
- */
 class Build extends Model
 {
     use HasFactory;

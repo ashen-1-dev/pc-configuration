@@ -4,8 +4,8 @@ namespace App\Services\Component;
 
 use App\Http\Controllers\Component\dto\CreateComponentDto;
 use App\Http\Controllers\Component\dto\GetComponentDto;
-use App\Models\Components\Component;
-use App\Models\Components\Type;
+use App\Models\Component\Component;
+use App\Models\Component\Type;
 use App\Services\FileService;
 
 class ComponentService

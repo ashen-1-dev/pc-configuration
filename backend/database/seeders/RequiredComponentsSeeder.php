@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Core\Components\RequiredComponentsForBuild;
-use App\Models\Components\Type as ComponentType;
+use App\Models\Component\Type as ComponentType;
 use Illuminate\Database\Seeder;
 
 class RequiredComponentsSeeder extends Seeder

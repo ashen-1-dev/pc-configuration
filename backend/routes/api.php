@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Component\ComponentController;
 use App\Http\Controllers\ComponentType\ComponentTypeController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,12 +17,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+// COMPONENTS
 
 Route::apiResource('components', ComponentController::class);
+
+// COMPONENT TYPES
 
 Route::get('/component-types/{type}/attributes', [ComponentTypeController::class, 'getRequiredAttributes']);
 Route::get('/component-types/', [ComponentTypeController::class, 'index']);
 
+// AUTH
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/logout', [AuthController::class, 'logout']);
+
+// USER
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::put('/user', [UserController::class, 'update']);
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'show'])->where('id', '[0 - 9]+');
+    Route::get('/users/me', [UserController::class, 'getAuthUser']);
+});
