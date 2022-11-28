@@ -8,11 +8,12 @@ class RequiredAttributesForGPU extends RequiredAttributes
     protected array $attributes = [
         'gpu_memory',
         'gpu_memory_type',
-        'manufacturer',
+        'vendor',
         'connector',
         'hdmi',
         'vga',
         'display_port',
+        'gpu_length'
     ];
 
 

@@ -8,7 +8,7 @@ class RequiredAttributesForCase extends RequiredAttributes
     protected array $attributes = [
         'form_factor',
         'motherboard_form_factor',
-        'gpu_length',
+        'max_gpu_length',
         'cpu_cooler_height',
     ];
 

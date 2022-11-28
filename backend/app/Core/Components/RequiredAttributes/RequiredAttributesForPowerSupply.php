@@ -8,10 +8,13 @@ class RequiredAttributesForPowerSupply extends RequiredAttributes
     protected array $attributes = [
         'power',
         'form_factor',
-        'cpu_sockets',
-        'gpu_sockets',
+        'main_socket',
+        'cpu_socket',
+        'cpu_power_socket',
         'sata15pin',
         'molex4pin',
+        'pcie8pin',
+        'pcie6pin'
     ];
 
 

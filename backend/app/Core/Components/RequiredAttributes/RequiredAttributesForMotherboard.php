@@ -13,6 +13,8 @@ class RequiredAttributesForMotherboard extends RequiredAttributes
         'memory_type',
         'sata_ports',
         'm2_ports',
+        'power_supply_form_factor',
+        'power_supply_main_socket'
     ];
 
 

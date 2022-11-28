@@ -2,7 +2,7 @@
 
 namespace App\Models\User;
 
-use App\Models\Build;
+use App\Models\Build\Build;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

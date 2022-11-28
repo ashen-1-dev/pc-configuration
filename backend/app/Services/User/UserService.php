@@ -12,17 +12,17 @@ class UserService
     /** @return GetUserDto[] */
     public function getUsers()
     {
-        return GetUserDto::collection(User::all())->all();
+        return GetUserDto::collection(User::with(['builds'])->all())->toArray();
     }
 
     public function getUser(int $id)
     {
-        return GetUserDto::from(User::findOrFail($id));
+        return GetUserDto::from(User::with(['builds'])->findOrFail($id));
     }
 
     public function getAuthUser()
     {
-        return GetUserDto::from(Auth::user());
+        return GetUserDto::from(Auth::user()->load(['builds.components']));
     }
 
     public function editUser(int $userId, EditUserDto $editUserDto): GetUserDto

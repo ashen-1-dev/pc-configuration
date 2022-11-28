@@ -1,0 +1,15 @@
+RAM = [Motherboard - type]
+GPU = [Motherboard - pci-e, Case - gpu_length, powersupply_connectors]
+CPU = [Motherboard - socket, CPU_Cooler, ]
+Case = [Motherboard - form_factor, CPU_Cooler - max_cpu_cooler_length, gpu - max_gpu_length]
+Motherboard = [
+    RAM - memory_type,
+    GPU - max_gpu_length,
+    CPU - cpu_socket,
+    Case - form_factor,
+    PowerSupply - powersupply_form_factor, powersupply_main_socket, powersupply_cpu_socket,
+   ]
+PowerSupply = [
+    Motherboard - form_factor, по наличию разъема необходимого для питание мат.платы,
+    GPU - по наличию разъема необходимого для питания видеокарты
+]

@@ -25,16 +25,16 @@ namespace App\Models {
      * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Component\Component[] $components
      * @property-read int|null $components_count
      * @property-read \App\Models\User\User $user
-     * @method static \Illuminate\Database\Eloquent\Builder|Build newModelQuery()
-     * @method static \Illuminate\Database\Eloquent\Builder|Build newQuery()
-     * @method static \Illuminate\Database\Eloquent\Builder|Build query()
-     * @method static \Illuminate\Database\Eloquent\Builder|Build whereCreatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Build whereDescription($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Build whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Build whereIsReady($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Build whereName($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Build whereUpdatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder|Build whereUserId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build whereDescription($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build whereIsReady($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build whereName($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Build\Build whereUserId($value)
      */
     class Build extends \Eloquent
     {
@@ -76,7 +76,7 @@ namespace App\Models\Component {
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Component\Attribute[] $attributes
      * @property-read int|null $attributes_count
-     * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Build[] $builds
+     * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Build\Build[] $builds
      * @property-read int|null $builds_count
      * @property-read \App\Models\Component\Type|null $type
      * @method static \Illuminate\Database\Eloquent\Builder|Component newModelQuery()
@@ -180,7 +180,7 @@ namespace App\Models\User {
      * @property string|null $remember_token
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Build[] $builds
+     * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Build\Build[] $builds
      * @property-read int|null $builds_count
      * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
      * @property-read int|null $notifications_count

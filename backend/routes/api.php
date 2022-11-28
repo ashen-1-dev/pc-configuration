@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Build\BuildController;
 use App\Http\Controllers\Component\ComponentController;
+use App\Http\Controllers\Component\dto\GetComponentDto;
 use App\Http\Controllers\ComponentType\ComponentTypeController;
 use App\Http\Controllers\User\UserController;
+use App\Services\Build\CompatibleChecker;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +40,25 @@ Route::get('/logout', [AuthController::class, 'logout']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/user', [UserController::class, 'update']);
     Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{id}', [UserController::class, 'show'])->where('id', '[0 - 9]+');
+    Route::get('/users/{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
     Route::get('/users/me', [UserController::class, 'getAuthUser']);
+});
+
+// BUILD
+
+Route::apiResource('builds', BuildController::class)->middleware(['auth:sanctum']);
+Route::get('/builds/{id}/add', [BuildController::class, 'addBuildToUser'])->middleware(['auth:sanctum']);
+
+// TEST
+
+Route::get('/test', function () {
+    $getComponentsDto = GetComponentDto::collection([
+        GetComponentDto::from(['id' => 1, 'type' => 'ram', 'name' => 'ram-ddr3',
+            'attributes' => [['name' => 'memory_type', 'value' => 'ddr3']]
+        ]),
+        GetComponentDto::from(['id' => 2, 'type' => 'motherboard', 'name' => 'motherboard',
+            'attributes' => [['name' => 'memory_type', 'value' => 'ddr2']]
+        ])
+    ]);
+    return (new CompatibleChecker())->checkCompatible($getComponentsDto);
 });
