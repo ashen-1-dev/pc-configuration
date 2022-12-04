@@ -2,58 +2,22 @@
 
 namespace App\Services\Build\ComponentChecker;
 
-use App\Http\Controllers\Build\dto\CompatibleChecker\ComponentStatusDto;
-use App\Http\Controllers\Build\dto\CompatibleChecker\NotCompatibleComponentDto;
+use App\Http\Controllers\Build\dto\BuildChecker\CompatibleChecker\CheckerResult;
 use App\Http\Controllers\Component\dto\GetComponentDto;
-use Spatie\LaravelData\DataCollection;
 
-class GPUChecker implements ComponentChecker
+class GPUChecker extends ComponentChecker
 {
-
-    /**
-     * @inheritDoc
-     */
-    public function check(GetComponentDto $source, DataCollection $targets): ComponentStatusDto
+    public function iterate(GetComponentDto $source, GetComponentDto $otherComponent): CheckerResult
     {
-        $isCompatible = true;
-        $notCompatibleComponents = [];
+        $data = new CheckerResult(isCompatible: true, message: '');
 
-        if ($source->type !== 'gpu') {
-            //FIXME: придумать, как система должна реагировать на неверный компонент (exception как вариант)
+        if ($otherComponent->type == 'case') {
+            $data = Checkers::checkGPUWithCase($source, $otherComponent);
         }
 
-        foreach ($targets as $otherComponent) {
-            $isComponentCompatible = true;
-
-            if ($otherComponent->type == 'case') {
-                [
-                    'compatible' => $isComponentCompatible,
-                    'message' => $message
-                ] = Checkers::checkGPUWithCase($source, $otherComponent);
-            }
-
-            if ($otherComponent->type == 'powersupply') {
-                [
-                    'compatible' => $isComponentCompatible,
-                    'message' => $message
-                ] = Checkers::checkGPUWithPowerSupply($source, $otherComponent);
-            }
-
-            $isCompatible &= $isComponentCompatible;
-
-            if (!$isComponentCompatible) {
-                $notCompatibleComponents[] = new NotCompatibleComponentDto(
-                    component: $otherComponent,
-                    message: $message ?? ''
-                );
-            }
+        if ($otherComponent->type == 'powersupply') {
+            $data = Checkers::checkGPUWithPowerSupply($source, $otherComponent);
         }
-        return new ComponentStatusDto(
-            componentId: $source->id,
-            isCompatible: $isCompatible,
-            notComaptibleComponents: empty($notCompatibleComponentDto)
-                ? null
-                : NotCompatibleComponentDto::collection($notCompatibleComponents)
-        );
+        return $data;
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Services\Build;
 
+use App\Http\Controllers\Build\dto\CheckBuildResult;
 use App\Http\Controllers\Build\dto\CreateBuildDto;
 use App\Http\Controllers\Build\dto\EditBuildDto;
 use App\Http\Controllers\Build\dto\GetBuildDto;
+use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Models\Build\Build;
 use App\Models\User\User;
 use Illuminate\Validation\ValidationException;
@@ -60,6 +62,12 @@ class BuildService
         }
         $build->refresh();
         return GetBuildDto::from($build);
+    }
+
+    public function checkBuildIsReady(GetBuildDto|RawBuildDto $getBuildDto): CheckBuildResult
+    {
+        $checker = new BuildChecker();
+        return $checker->checkBuildIsReady($getBuildDto);
     }
 
 }

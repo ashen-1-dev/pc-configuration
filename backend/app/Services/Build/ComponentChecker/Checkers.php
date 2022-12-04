@@ -2,13 +2,20 @@
 
 namespace App\Services\Build\ComponentChecker;
 
+use App\Http\Controllers\Build\dto\BuildChecker\CompatibleChecker\CheckerResult;
 use App\Http\Controllers\Component\dto\GetComponentDto;
+use App\Services\Build\MotherboardFormFactor;
 use App\Services\Build\PowerSupplyFormFactor;
 
 class Checkers
 {
     private const CHECKERS = [
         'ram' => RAMChecker::class,
+        'gpu' => GPUChecker::class,
+        'motherboard' => MotherboardChecker::class,
+        'case' => CaseChecker::class,
+        'powersupply' => PowerSupplyChecker::class,
+        'cpu' => CPUChecker::class,
     ];
 
     /**
@@ -23,29 +30,40 @@ class Checkers
         return null;
     }
 
-    public static function checkRamWithMotherboard(GetComponentDto $ram, GetComponentDto $motherboard)
+    public static function checkRAMWithMotherboard(GetComponentDto $ram, GetComponentDto $motherboard): CheckerResult
     {
-        $RAMAttribute = $ram->attributes->where('name', '=', 'memory_type')->first()->value;
-        $motherboardAttribute = $motherboard->attributes->where('name', '=', 'memory_type')->first()->value;
-        if ($motherboardAttribute == $RAMAttribute) {
-            return ['compatible' => true, 'message' => ''];
+        $ramMemoryType = $ram->attributes->where('name', '=', 'memory_type')->first()->value;
+        $motherboardMemoryType = $motherboard->attributes->where('name', '=', 'memory_type')->first()->value;
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
+        if ($motherboardMemoryType != $ramMemoryType) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'У ОЗУ и мат.платы не совпадают типы памяти.';
         }
-        return [
-            'compatible' => false,
-            'message' => 'У ОЗУ и мат.платы не совпадают типы памяти.'
-        ];
+
+        $ramAmountOfModules = $ram->attributes->where('name', '=', 'number_of_modules')->first()->value;
+        $motherboardAmountOfRAM = $motherboard->attributes->where('name', '=', 'memory_slots')->first()->value;
+
+        if ($ramAmountOfModules > $motherboardAmountOfRAM) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Недостаточно слотов для оперативной памяти';
+        }
+
+        return $checkerResult;
     }
 
-    public static function checkGPUWithCase(GetComponentDto $gpu, GetComponentDto $case)
+    public static function checkGPUWithCase(GetComponentDto $gpu, GetComponentDto $case): CheckerResult
     {
-        $gpuLength = $gpu->attributes->where('name', 'gpu_length')->first()->value;
-        $maxGpuLengthInCase = $case->attributes->where('name', 'max_gpu_length')->first()->value;
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
 
-        if ($gpuLength <= $maxGpuLengthInCase) {
-            return ['compatible' => true, 'message' => ''];
+        $gpuLength = $gpu->attributes->where('name', '=', 'gpu_length')->first()->value;
+        $maxGpuLengthInCase = $case->attributes->where('name', '=', 'max_gpu_length')->first()->value;
+
+        if ($gpuLength > $maxGpuLengthInCase) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Видеокарте недостаточно места для данного корпуса';
         }
 
-        return ['compatible' => false, 'message' => 'Видеокарте недостаточно места для данного корпуса'];
+        return $checkerResult;
     }
 
     public static function checkGPUWithMotherboard(GetComponentDto $gpu, GetComponentDto $motherboard)
@@ -54,110 +72,164 @@ class Checkers
     }
 
 
-    public static function checkGPUWithPowerSupply(GetComponentDto $gpu, GetComponentDto $powersupply)
+    public static function checkGPUWithPowerSupply(GetComponentDto $gpu, GetComponentDto $powersupply): CheckerResult
     {
-        $gpuPower = $gpu->attributes->where('name', 'pcie6pin')->first();
-        $error = ['compatible' => false, 'message' => 'Недостаточно кабелей питания для видеокарты'];
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
+
+        $gpuPower = $gpu->attributes->where('name', '=', 'pcie6pin')->first();
+
         if (isset($gpuPower)) {
-            $powersupplyConnector = $powersupply->attributes->where('name', 'pcie6pin')->first();
+            $powersupplyConnector = $powersupply->attributes->where('name', '=', 'pcie6pin')->first();
             if (!isset($powersupplyConnector) || !($powersupplyConnector->value >= $gpuPower->value)) {
-                return $error;
+                $checkerResult->isCompatible = false;
+                $checkerResult->message = 'Недостаточно кабелей питания для видеокарты';
             }
         }
 
         $gpuPower = $gpu->attributes->where('name', 'pcie8pin')->first();
 
         if (isset($gpuPower)) {
-            $powersupplyConnector = $powersupply->attributes->where('name', 'pcie8pin')->first();
+            $powersupplyConnector = $powersupply->attributes->where('name', '=', 'pcie8pin')->first();
             if (!isset($powersupplyConnector) || !($powersupplyConnector->value >= $gpuPower->value)) {
-                return $error;
+                $checkerResult->isCompatible = false;
+                $checkerResult->message = 'Недостаточно кабелей питания для видеокарты';
             }
         }
-        return ['compatible' => true, 'message'];
+        return $checkerResult;
     }
 
-    public static function checkCPUWithMotherboard(GetComponentDto $cpu, GetComponentDto $motherboard)
+    public static function checkCPUWithMotherboard(GetComponentDto $cpu, GetComponentDto $motherboard): CheckerResult
     {
-        $cpuSocket = $cpu->attributes->where('name', 'socket')->first()->value;
-        $motherboardCpuSocket = $motherboard->attributes->where('name', 'socket')->first()->value;
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
 
-        if ($cpuSocket == $motherboardCpuSocket) {
-            return ['compatible' => true, 'message' => ''];
+        $cpuSocket = $cpu->attributes->where('name', '=', 'socket')->first()->value;
+        $motherboardCpuSocket = $motherboard->attributes->where('name', '=', 'socket')->first()->value;
+
+        if ($cpuSocket != $motherboardCpuSocket) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Процессор несовместим с мат. платой';
         }
 
-        return ['compatible' => false, 'message' => 'Процессор несовместим с мат. платой'];
+        return $checkerResult;
     }
 
-    public static function checkWithCPUWithCPUCooler(GetComponentDto $cpu, GetComponentDto $cpuCooler)
+    public static function checkWithCPUWithCPUCooler(GetComponentDto $cpu, GetComponentDto $cpuCooler): CheckerResult
     {
-        $cpuSocket = $cpu->attributes->where('name', 'socket')->first()->value;
-        $cpuCoolerSocket = $cpuCooler->attributes->where('name', 'socket')->first()->value;
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
+        $cpuSocket = $cpu->attributes->where('name', '=', 'socket')->first()->value;
+        $cpuCoolerSocket = $cpuCooler->attributes->where('name', '=', 'socket')->first()->value;
         //FIXME: сокеты, которые поддерживает кулер, может быть несколько
-        if ($cpuSocket == $cpuCoolerSocket) {
-            return ['compatible' => true, 'message' => ''];
+        if ($cpuSocket != $cpuCoolerSocket) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Сокеты процесса и процессорного охлаждения несовместимы';
         }
+
+        return $checkerResult;
     }
 
-    public static function checkCaseWithMotherboard(GetComponentDto $case, GetComponentDto $motherboard)
+    public static function checkCaseWithMotherboard(GetComponentDto $case, GetComponentDto $motherboard): CheckerResult
     {
-        $caseFormFactor = $case->attributes->where('name', 'form_factor')->first()->value;
-        $motherboardFormFactor = $motherboard->attributes->where('name', 'form_factor')->first()->value;
-
-        if ($caseFormFactor === $motherboardFormFactor) {
-            return ['compatible' => true, 'message' => ''];
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
+        if (!self::checkFormFactorBetweenCaseAndMotherboard($case, $motherboard)) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Мат. плата и корпус имеют разные форм-факторы';
         }
 
-        return ['compatible' => false, 'message' => 'Мат. плата и корпус имеют разные форм-факторы'];
+        return $checkerResult;
     }
 
-    public static function checkCaseWithCPUCooler(GetComponentDto $case, GetComponentDto $cpuCooler)
+    public static function checkCaseWithCPUCooler(GetComponentDto $case, GetComponentDto $cpuCooler): CheckerResult
     {
-        $maxCPUCoolerHeight = $case->attributes->where('max_cpu_cooler_length')->first()->value;
-        $cpuCoolerHeight = $cpuCooler->attributes->where('height')->first()->value;
-        if ($cpuCoolerHeight <= $maxCPUCoolerHeight) {
-            return ['compatible' => true, 'message' => ''];
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
+
+        $maxCPUCoolerHeight = $case->attributes->where('name', '=', 'max_cpu_cooler_height')->first()->value;
+        $cpuCoolerHeight = $cpuCooler->attributes->where('name', '=', 'height')->first()->value;
+
+        if ($cpuCoolerHeight > $maxCPUCoolerHeight) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Неподходящие габариты процессорного кулера и корпуса';
         }
-        return ['compatible' => false, 'message' => 'Неподходящие габариты процессорного кулера и корпуса'];
+        return $checkerResult;
     }
 
     public static function checkPowerSupplyWithMotherboard(GetComponentDto $ps, GetComponentDto $motherboard)
     {
-        if (!self::checkFormFactorBetweenMotherboardAndPowerSupply($ps, $motherboard)) {
-            return ['compatible' => false, 'message' => 'Блок питания и мат. плата имеют несовместимые форм-факторы'];
+        $checkerResult = new CheckerResult(isCompatible: true, message: '');
+        if (!self::checkFormFactorBetweenPowerSupplyAndMotherboard($ps, $motherboard)) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Блок питания и мат. плата имеют несовместимые форм-факторы';
         }
 
-        $powerSupplyMainSocket = $ps->attributes->where('name', 'main_socket')->first()->value;
-        $motherboardSocket = $motherboard->attributes->where('name', 'power_supply_main_socket')->first()->value;
+        $powerSupplyMainSocket = $ps->attributes->where('name', '=', 'main_socket')->first()->value;
+        $motherboardSocket = $motherboard->attributes->where('name', '=', 'power_supply_main_socket')->first()->value;
 
-        if (!$powerSupplyMainSocket == $motherboardSocket) {
-            return ['compatible' => false, 'Не подходит основной кабель питания мат. платы'];
+        if ($powerSupplyMainSocket != $motherboardSocket) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Не подходит основной кабель питания мат. платы';
         }
 
-        $powerSupplyCPUSocket = $ps->attributes->where('name', 'cpu_socket')->first()->value;
-        $motherboardCPUPowerSocket = $motherboard->attributes->where('name', 'cpu_power_socket')->first()->value;
+        $powerSupplyCPUSocket = $ps->attributes->where('name', '=', 'cpu_power_socket')->first()->value;
+        $motherboardCPUPowerSocket = $motherboard->attributes->where('name', '=', 'cpu_power_socket')->first()->value;
 
-        if (!$powerSupplyCPUSocket == $motherboardCPUPowerSocket) {
-            return ['compatible' => false, 'Не подходит  кабель питания процессора в  мат. плате'];
+        if ($powerSupplyCPUSocket != $motherboardCPUPowerSocket) {
+            $checkerResult->isCompatible = false;
+            $checkerResult->message = 'Не подходит  кабель питания процессора в мат. плате';
         }
 
-        return ['compatible' => true, 'message' => ''];
+        return $checkerResult;
     }
 
-    private static function checkFormFactorBetweenMotherboardAndPowerSupply(
+    private static function checkFormFactorBetweenPowerSupplyAndMotherboard(
         GetComponentDto $ps,
         GetComponentDto $motherboard
     ): bool
     {
-        $powerSupplyFormFactor = $ps->attributes->where('name', 'form_factor')->first()->value;
-        $motherboardFormFactor = $motherboard->attributes->where('name', 'power_supply_form_factor')->first()->value;
+        $powerSupplyFormFactor = $ps
+            ->attributes
+            ->where('name', '=', 'form_factor')
+            ->first()
+            ->value;
+        $motherboardFormFactor = $motherboard
+            ->attributes
+            ->where('name', '=', 'power_supply_form_factor')
+            ->first()
+            ->value;
         $powerSupplySizes = PowerSupplyFormFactor::getValue($powerSupplyFormFactor);
-        $supportedPowerSupplySizes = PowerSupplyFormFactor::getValue($motherboardFormFactor);
+        $motherboardPowerSupplySizes = PowerSupplyFormFactor::getValue($motherboardFormFactor);
 
-        $isLengthFit = $supportedPowerSupplySizes['length'] >= $powerSupplySizes['height'];
-        $isWidthFit = $supportedPowerSupplySizes['width'] >= $powerSupplySizes['width'];
-        $isHeightFit = $supportedPowerSupplySizes['height'] >= $powerSupplySizes['height'];
+        $isLengthFit = $motherboardPowerSupplySizes['length'] >= $powerSupplySizes['height'];
+        $isWidthFit = $motherboardPowerSupplySizes['width'] >= $powerSupplySizes['width'];
+        $isHeightFit = $motherboardPowerSupplySizes['height'] >= $powerSupplySizes['height'];
 
         if ($isHeightFit && $isLengthFit && $isWidthFit) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static function checkFormFactorBetweenCaseAndMotherboard(
+        GetComponentDto $case,
+        GetComponentDto $motherboard
+    ): bool
+    {
+        $caseFormFactor = $case
+            ->attributes
+            ->where('name', '=', 'form_factor')
+            ->first()
+            ->value;
+        $motherboardFormFactor = $motherboard
+            ->attributes
+            ->where('name', '=', 'form_factor')
+            ->first()
+            ->value;
+        $caseSize = MotherboardFormFactor::getValue($caseFormFactor);
+        $motherboardSize = MotherboardFormFactor::getValue($motherboardFormFactor);
+
+        $isLengthFit = $motherboardSize['length'] >= $caseSize['length'];
+        $isWidthFit = $motherboardSize['width'] >= $caseSize['width'];
+
+        if ($isLengthFit && $isWidthFit) {
             return true;
         }
 

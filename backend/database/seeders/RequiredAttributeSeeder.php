@@ -2,13 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Core\Components\RequiredAttributes\RequiredAttributesForCase as PCCase;
-use App\Core\Components\RequiredAttributes\RequiredAttributesForCPU as CPU;
-use App\Core\Components\RequiredAttributes\RequiredAttributesForDiskDrive as DiskDrive;
-use App\Core\Components\RequiredAttributes\RequiredAttributesForGPU as GPU;
-use App\Core\Components\RequiredAttributes\RequiredAttributesForMotherboard as Motherboard;
-use App\Core\Components\RequiredAttributes\RequiredAttributesForPowerSupply as PowerSupply;
-use App\Core\Components\RequiredAttributes\RequiredAttributesForRAM as RAM;
+
+use App\Core\Components\RequiredAttributes\CPU;
+use App\Core\Components\RequiredAttributes\DiskDrive;
+use App\Core\Components\RequiredAttributes\GPU;
+use App\Core\Components\RequiredAttributes\Motherboard;
+use App\Core\Components\RequiredAttributes\PCCase;
+use App\Core\Components\RequiredAttributes\PowerSupply;
+use App\Core\Components\RequiredAttributes\RAM;
 use App\Models\Component\Type;
 use DB;
 use Illuminate\Database\Seeder;
@@ -38,6 +39,7 @@ class RequiredAttributeSeeder extends Seeder
             Motherboard::$name => Motherboard::getAttributes(),
         ];
         $result = [];
+        //FIXME: optimize
         foreach ($component_types as $component_type) {
             $attributes = $requiredAttributes[$component_type->name];
             foreach ($attributes as $attribute) {

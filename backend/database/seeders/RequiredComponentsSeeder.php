@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Core\Components\RequiredComponentsForBuild;
 use App\Models\Component\Type as ComponentType;
+use App\Services\Build\RequiredComponentsForBuild;
 use Illuminate\Database\Seeder;
 
 class RequiredComponentsSeeder extends Seeder

@@ -47,7 +47,7 @@ class ComponentService
 
     public function updateComponent(int $id, CreateComponentDto $createComponentDto): GetComponentDto
     {
-        //TODO:FIXME
+        //FIXME
         $component = Component::findOrFail($id);
         $component->update($createComponentDto->toArray());
 //        dd($createComponentDto->attributes->toArray());

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Build;
 
 use App\Http\Controllers\Build\dto\CreateBuildDto;
 use App\Http\Controllers\Build\dto\EditBuildDto;
+use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Http\Controllers\Controller;
 use App\Services\Build\BuildService;
 use Illuminate\Http\Request;
@@ -49,5 +50,11 @@ class BuildController extends Controller
     {
         $userId = \Auth::id();
         return $this->buildService->addBuild($buildId, $userId);
+    }
+
+    public function checkBuildIsReady(Request $request)
+    {
+        $dto = RawBuildDto::from($request);
+        return $this->buildService->checkBuildIsReady($dto);
     }
 }
