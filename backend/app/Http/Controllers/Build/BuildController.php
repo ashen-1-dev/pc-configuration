@@ -54,7 +54,7 @@ class BuildController extends Controller
 
     public function checkBuildIsReady(Request $request)
     {
-        $dto = RawBuildDto::from($request);
+        $dto = RawBuildDto::from(['componentsIds' => $request->componentsIds]);
         return $this->buildService->checkBuildIsReady($dto);
     }
 }

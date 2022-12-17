@@ -3,23 +3,27 @@ import MainLayout from '../../layouts/MainLayout';
 import ComponentList from '../../components/component/component-list/ComponentList';
 import CreateComponentForm from '../../components/component/form/CreateComponentForm';
 import { Button, Col, Form, Modal, Row } from 'antd';
+import { useQuery } from '@tanstack/react-query';
+import ComponentService from '../../services/component/ComponentService';
 
 const Component: FC = () => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-	const [form] = Form.useForm();
 
+	const { data: components } = useQuery({
+		queryKey: ['components'],
+		queryFn: async () => await ComponentService.getComponents(),
+	});
+
+	const [form] = Form.useForm();
 	const showModal = () => {
 		setIsModalOpen(true);
 	};
-
 	const handleOk = () => {
 		form.submit();
 	};
-
 	const handleCancel = () => {
 		setIsModalOpen(false);
 	};
-
 	return (
 		<MainLayout>
 			<Row justify={'center'} style={{ marginTop: '40px' }}>
@@ -27,7 +31,7 @@ const Component: FC = () => {
 			</Row>
 			<Row justify={'center'} style={{ paddingTop: '30px' }}>
 				<Col span={12}>
-					<ComponentList />
+					<ComponentList components={components} />
 					<Modal
 						title="Создать новый компонент"
 						open={isModalOpen}

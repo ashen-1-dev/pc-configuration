@@ -1,12 +1,16 @@
 import React, { FC } from 'react';
 import { Col, Row } from 'antd';
 import { TypeName } from '../../../models/type/types';
-import { ComponentItemProps } from './ComponentItem';
 import { DeleteOutlined } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ComponentService from '../../../services/component/ComponentService';
+import { GetComponentDto } from '../../../models/component/get-component.dto';
 
-const ComponentHeader: FC<ComponentItemProps> = ({ component }) => {
+interface ComponentItemHeaderProps {
+	component: GetComponentDto;
+}
+
+const ComponentHeader: FC<ComponentItemHeaderProps> = ({ component }) => {
 	const { name, type } = component;
 	const client = useQueryClient();
 	const mutation = useMutation({

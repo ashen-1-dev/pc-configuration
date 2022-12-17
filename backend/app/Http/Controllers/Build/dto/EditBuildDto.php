@@ -11,7 +11,7 @@ class EditBuildDto extends \Spatie\LaravelData\Data
         public ?string $name,
         public ?string $description,
         #[ArrayType, Min(1)]
-        public ?array  $components,
+        public ?array  $componentsIds,
     )
     {
     }

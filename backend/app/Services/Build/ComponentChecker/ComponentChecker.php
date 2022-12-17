@@ -36,7 +36,7 @@ abstract class ComponentChecker
         return new ComponentStatusDto(
             componentId: $source->id,
             isCompatible: $isCompatible,
-            notComaptibleComponents: empty(array_filter($notCompatibleComponents))
+            notCompatibleComponents: empty(array_filter($notCompatibleComponents))
                 ? null
                 : NotCompatibleComponentDto::collection($notCompatibleComponents)
         );

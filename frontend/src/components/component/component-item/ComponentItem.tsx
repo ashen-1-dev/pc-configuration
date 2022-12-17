@@ -3,7 +3,7 @@ import { GetComponentDto } from '../../../models/component/get-component.dto';
 import './ComponentItem.css';
 import { Col, Image, Row, Typography } from 'antd';
 
-export interface ComponentItemProps {
+interface ComponentItemProps {
 	component: GetComponentDto;
 }
 

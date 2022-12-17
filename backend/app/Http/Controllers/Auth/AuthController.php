@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\User\dto\CreateUserDto;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
-use mysql_xdevapi\Exception;
 
 class AuthController extends Controller
 {
@@ -20,12 +19,8 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        try {
-            $dto = CreateUserDto::from($request);
-            return $this->authService->register($dto);
-        } catch (Exception $exception) {
-            return $exception;
-        }
+        $dto = CreateUserDto::from($request);
+        return $this->authService->register($dto);
     }
 
     public function login(Request $request)

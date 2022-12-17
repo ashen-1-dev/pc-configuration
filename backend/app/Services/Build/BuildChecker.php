@@ -7,6 +7,7 @@ use App\Http\Controllers\Build\dto\BuildChecker\CompatibleChecker\ComponentStatu
 use App\Http\Controllers\Build\dto\BuildChecker\EnergyConsumptionStatus;
 use App\Http\Controllers\Build\dto\BuildChecker\RequirementComponentsStatus;
 use App\Http\Controllers\Build\dto\CheckBuildResult;
+use App\Http\Controllers\Build\dto\CreateBuildDto;
 use App\Http\Controllers\Build\dto\GetBuildDto;
 use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Http\Controllers\Component\dto\GetComponentDto;
@@ -17,10 +18,12 @@ use Spatie\LaravelData\DataCollection;
 class BuildChecker
 {
 
-    public function checkBuildIsReady(GetBuildDto|RawBuildDto $dto): CheckBuildResult
+    public function checkBuildIsReady(GetBuildDto|RawBuildDto|CreateBuildDto $dto): CheckBuildResult
     {
 
-        $components = $dto instanceof GetBuildDto ? $dto->components : Component::findMany($dto->componentsIds);
+        $components = $dto instanceof GetBuildDto ?
+            $dto->components :
+            GetComponentDto::collection(Component::findMany($dto->componentsIds));
         $buildCompatibleStatus = $this->checkCompatible($components);
         $energyConsumptionStatus = $this->checkEnergyConsumption($components);
         $requirementComponentsStatus = $this->checkForRequiredComponents($components);
@@ -96,28 +99,30 @@ class BuildChecker
         DataCollection $getComponentsDto
     ): EnergyConsumptionStatus|null
     {
-        $ps = $getComponentsDto->where('type', '=', 'powersupply')->first();
-        if (!isset($ps)) {
-            return null;
-        }
-        $totalConsumption = $this->countEnergyConsumption($getComponentsDto);
-
-        $psPower = $ps->attributes
-            ->where('name', '=', 'power')
-            ->first()
-            ->value;
-
+        $psPower = 0;
+        $totalConsumption = 0;
         $result = new EnergyConsumptionStatus(
             isEnough: true,
             totalConsumption: $totalConsumption,
             psPower: $psPower,
         );
 
+        $totalConsumption = $this->countEnergyConsumption($getComponentsDto);
+        $ps = $getComponentsDto->where('type', '=', 'powersupply')->first();
+
+        if (!isset($ps)) {
+            $result->isEnough = false;
+        } else {
+            $psPower = $ps->attributes
+                ->where('name', '=', 'power')
+                ->first()
+                ->value;
+            $result->psPower = $psPower;
+        }
+
         if ($psPower < $totalConsumption) {
             $result->isEnough = false;
         }
-
-
         return $result;
     }
 

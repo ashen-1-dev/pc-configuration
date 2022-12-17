@@ -1,30 +1,28 @@
 import React, { FC } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import ComponentService from '../../../services/component/ComponentService';
 import ComponentItem from '../component-item/ComponentItem';
 import { Collapse, Typography } from 'antd';
 import ComponentHeader from '../component-item/ComponentHeader';
 import './ComponentList.css';
+import { GetComponentDto } from '../../../models/component/get-component.dto';
+
+interface ComponentListProps {
+	components?: GetComponentDto[];
+}
 
 const { Title } = Typography;
-const ComponentList: FC = () => {
-	const query = useQuery({
-		queryKey: ['components'],
-		queryFn: ComponentService.getComponents,
-	});
-
+const ComponentList: FC<ComponentListProps> = ({ components }) => {
 	return (
 		<div className={'component-list'}>
 			<Title style={{ textAlign: 'center' }} level={4}>
 				Список компонентов
 			</Title>
-			{!query.data?.length ? (
+			{components == null ? (
 				<Title style={{ textAlign: 'center' }} level={4}>
 					Комплектующие не найдены
 				</Title>
 			) : (
 				<Collapse>
-					{query.data?.map(component => (
+					{components.map(component => (
 						<Collapse.Panel
 							showArrow={false}
 							key={component.id}

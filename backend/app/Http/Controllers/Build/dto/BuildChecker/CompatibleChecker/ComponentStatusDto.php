@@ -11,7 +11,7 @@ class ComponentStatusDto extends \Spatie\LaravelData\Data
         public int             $componentId,
         public bool            $isCompatible,
         #[DataCollectionOf(NotCompatibleComponentDto::class)]
-        public ?DataCollection $notComaptibleComponents = null
+        public ?DataCollection $notCompatibleComponents = null
     )
     {
     }

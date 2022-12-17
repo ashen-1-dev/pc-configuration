@@ -26,8 +26,12 @@ class BuildService
 
     public function createBuild(CreateBuildDto $createBuildDto, int $userId): GetBuildDto
     {
-        $build = Build::create([...$createBuildDto->toArray(), 'user_id' => $userId]);
-        $build->components()->attach($createBuildDto->components);
+        $build = Build::create([
+            ...$createBuildDto->toArray(),
+            'user_id' => $userId,
+            'is_ready' => (new BuildChecker)->checkBuildIsReady($createBuildDto)->isReady
+        ]);
+        $build->components()->attach($createBuildDto->componentsIds);
         $build->load(['components', 'user']);
         return GetBuildDto::from($build);
     }
@@ -56,9 +60,12 @@ class BuildService
     public function updateBuild(EditBuildDto $editBuildDto, int $id): GetBuildDto
     {
         $build = Build::with('components', 'user')->findOrFail($id);
-        $build->updateOrFail(array_filter($editBuildDto->toArray()));
-        if (isset($editBuildDto->components)) {
-            $build->components()->sync($editBuildDto->components);
+        $build->updateOrFail(array_filter([
+            ...$editBuildDto->toArray(),
+            'is_ready' => (new BuildChecker())->checkBuildIsReady($editBuildDto)->isReady
+        ]));
+        if (isset($editBuildDto->componentsIds)) {
+            $build->components()->sync($editBuildDto->componentsIds);
         }
         $build->refresh();
         return GetBuildDto::from($build);

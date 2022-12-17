@@ -15,6 +15,7 @@ class Motherboard extends Component
         'm2_slots',
         'power_supply_form_factor',
         'power_supply_main_socket',
+        'power_supply_cpu_socket',
         'energy_consumption'
     ];
 }

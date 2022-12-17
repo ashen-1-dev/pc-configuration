@@ -9,6 +9,6 @@ abstract class Component
 
     public static function getAttributes()
     {
-        return (new self::class)->attributes;
+        return static::$attributes;
     }
 }

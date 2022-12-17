@@ -1,17 +1,27 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { routes } from '../router';
+import { authUserRoutes, publicRoutes } from '../router';
 
 const AppRouter: React.FC = () => {
+	const userIsAuth = !!localStorage.getItem('accessToken');
+
 	return (
 		<Routes>
-			{routes.map(route => (
+			{publicRoutes.map(route => (
 				<Route
 					key={route.uri}
 					path={route.uri}
-					element={(<route.component />) as unknown as ReactNode}
+					element={<route.component />}
 				/>
 			))}
+			{userIsAuth &&
+				authUserRoutes.map(route => (
+					<Route
+						key={route.uri}
+						path={route.uri}
+						element={<route.component />}
+					/>
+				))}
 		</Routes>
 	);
 };

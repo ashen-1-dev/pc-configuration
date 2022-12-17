@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Component;
 
+use App\Http\Controllers\Component\dto\ComponentQuery;
 use App\Http\Controllers\Component\dto\CreateComponentDto;
 use App\Http\Controllers\Controller;
 use App\Services\Component\ComponentService;
@@ -16,9 +17,9 @@ class ComponentController extends Controller
         $this->componentService = $componentService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->componentService->getComponents());
+        return $this->componentService->getComponents(ComponentQuery::from($request))->toArray();
     }
 
     public function destroy(int $id)

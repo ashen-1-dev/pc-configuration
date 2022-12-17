@@ -6,6 +6,7 @@ export const enum ComponentType {
 	Motherboard = 'motherboard',
 	PowerSupply = 'powersupply',
 	CPUCooler = 'cpucooler',
+	CASE = 'case',
 }
 
 export const TypeName = {
@@ -16,4 +17,5 @@ export const TypeName = {
 	[ComponentType.PowerSupply]: 'Блок питания',
 	[ComponentType.Motherboard]: 'Материнская плата',
 	[ComponentType.CPUCooler]: 'Охлаждение процессора',
+	[ComponentType.CASE]: 'Корпус',
 };

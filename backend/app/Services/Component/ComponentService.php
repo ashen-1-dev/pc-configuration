@@ -2,6 +2,7 @@
 
 namespace App\Services\Component;
 
+use App\Http\Controllers\Component\dto\ComponentQuery;
 use App\Http\Controllers\Component\dto\CreateComponentDto;
 use App\Http\Controllers\Component\dto\GetComponentDto;
 use App\Models\Component\Component;
@@ -17,18 +18,40 @@ class ComponentService
         $this->fileService = $fileService;
     }
 
-    /**
-     * @return GetComponentDto[]
-     */
-    public function getComponents(): array
+    public function getComponents(ComponentQuery $componentQuery)
     {
-        $components = Component::with(['attributes', 'type'])->get();
-        return $components->map(fn($component) => GetComponentDto::fromModel($component))->toArray();
+        $filterQuery = array_filter([
+            'type.name' => $componentQuery->type ?? $componentQuery->type
+        ]);
+
+        if (empty($filterQuery)) {
+            return $this->getAllComponents();
+        }
+
+        $components = Component::with(['attributes', 'type'])
+            ->get()
+            ->where('type.name', '=', $filterQuery['type.name']);
+//FIXME
+//            ->where(function (Builder $q) use ($filterQuery) {
+//            foreach ($filterQuery as $key => $value) {
+//                $q->where($key, '=', $value);
+//            }
+//        })->get();
+
+        return $components->map(fn($component) => GetComponentDto::fromModel($component))->values();
+    }
+
+    public function getAllComponents()
+    {
+        return Component::with(['attributes', 'type'])
+            ->get()
+            ->map(fn($component) => GetComponentDto::fromModel($component));
     }
 
     public function deleteComponent(int $id)
     {
         $component = Component::findOrFail($id);
+        $component->builds()->detach();
         $component->delete();
     }
 

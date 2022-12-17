@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 // COMPONENTS
 
-Route::apiResource('components', ComponentController::class);
+Route::apiResource('components', ComponentController::class)->middleware('auth:sanctum');
 
 // COMPONENT TYPES
 

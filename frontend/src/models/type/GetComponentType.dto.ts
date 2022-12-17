@@ -1,5 +1,7 @@
+import { ComponentType } from './types';
+
 export class GetComponentTypeDto {
 	id: number;
-	name: string;
+	name: ComponentType;
 	required: boolean;
 }

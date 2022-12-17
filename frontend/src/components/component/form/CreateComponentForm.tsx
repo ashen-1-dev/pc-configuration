@@ -13,7 +13,7 @@ interface CreateComponentFormProps {
 }
 
 // @ts-expect-error
-const dummyRequest = ({ onSuccess }) => {
+const dummyRequest = ({ onSuccess }): void => {
 	setTimeout(() => {
 		onSuccess('ok');
 	}, 0);
@@ -23,10 +23,10 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 	form,
 	onSuccess,
 }) => {
-	const [selectedType, setSelectedType] = useState<string>();
+	const [selectedType, setSelectedType] = useState<string | null>(null);
 	// FIXME: refactor
 	const client = useQueryClient();
-	const { data: requiredAttributes } = useQuery({
+	const { data: requiredAttributes, refetch } = useQuery({
 		queryKey: ['required-attributes', selectedType],
 		queryFn: async () =>
 			await ComponentTypeService.getRequiredAttributes(
@@ -44,13 +44,16 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 		mutationKey: ['create component'],
 		onSuccess: async () => {
 			await client.invalidateQueries(['components']);
+			form?.resetFields();
 		},
 	});
 
-	const onTypeChange = (type: string) => {
+	const onTypeChange = async (type: string): Promise<void> => {
 		setSelectedType(type);
+		await refetch();
 	};
-	const onFinish = (values: any) => {
+
+	const onFinish = (values: any): void => {
 		console.log('values: ', values);
 		const dto = convertDataToCreateComponentDto(values);
 		mutate(dto);
@@ -69,7 +72,7 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 			<Form.Item
 				name={'name'}
 				rules={[rules.required()]}
-				label={'Назавание'}
+				label={'Название'}
 			>
 				<Input />
 			</Form.Item>

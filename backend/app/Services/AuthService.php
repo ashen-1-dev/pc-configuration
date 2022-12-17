@@ -4,12 +4,12 @@ namespace App\Services;
 
 use App\Http\Controllers\Auth\dto\LoginUserDto;
 use App\Http\Controllers\User\dto\CreateUserDto;
-use App\Http\Controllers\User\dto\GetUserDto;
 use App\Models\User\User;
 use Auth;
 use Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
 use Session;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthService
 {
@@ -18,22 +18,23 @@ class AuthService
         $user = User::where('email', $loginUserDto->email)->first();
 
         if (!$user || !Hash::check($loginUserDto->password, $user->password)) {
-            throw ValidationException::withMessages(['The provided credentials are incorrect.']);
+            throw new AuthenticationException();
         }
-        $token = $user->createToken('frontend')->plainTextToken;
-        return ['access_token' => $token];
+        $token = $user->createToken('accessToken')->plainTextToken;
+        return ['accessToken' => $token];
     }
 
 
-    public function register(CreateUserDto $createUserDto): GetUserDto
+    public function register(CreateUserDto $createUserDto)
     {
         if (User::where('email', '=', $createUserDto->email)->first() != null) {
-            throw ValidationException::withMessages(['user already exists']);
+            throw new NotFoundHttpException('user already exists');
         }
         $createUserDto->password = Hash::make($createUserDto->password);
         $user = User::create($createUserDto->toArray());
-        return GetUserDto::from($user);
+        return ['accessToken' => $user->createToken('accessToken')->plainTextToken];
     }
+
 
     public function logout()
     {

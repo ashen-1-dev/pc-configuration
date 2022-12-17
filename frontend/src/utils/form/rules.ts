@@ -3,4 +3,11 @@ export const rules = {
 		required: true,
 		message,
 	}),
+	min: (
+		number: number,
+		message: string = 'Минимальная длина поля ' + number,
+	): object => ({
+		min: number,
+		message,
+	}),
 };
