@@ -14,6 +14,7 @@ const RegisterForm: FC = () => {
 		onSuccess: data => {
 			localStorage.setItem('accessToken', data.accessToken);
 			navigate(RouteNames.MAIN);
+			window.location.reload();
 		},
 	});
 

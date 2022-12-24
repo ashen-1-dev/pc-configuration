@@ -6,6 +6,7 @@ use App\Http\Controllers\Build\dto\CreateBuildDto;
 use App\Http\Controllers\Build\dto\EditBuildDto;
 use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Http\Controllers\Controller;
+use App\Services\Build\BuildQuery;
 use App\Services\Build\BuildService;
 use Illuminate\Http\Request;
 
@@ -18,9 +19,10 @@ class BuildController extends Controller
         $this->buildService = $buildService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->buildService->getBuilds();
+        $dto = BuildQuery::from($request);
+        return $this->buildService->getBuilds($dto);
     }
 
     public function show(int $id)
@@ -50,6 +52,12 @@ class BuildController extends Controller
     {
         $userId = \Auth::id();
         return $this->buildService->addBuild($buildId, $userId);
+    }
+
+    public function getAuthUserBuilds()
+    {
+        $dto = BuildQuery::from(['user_id' => \Auth::id()]);
+        return $this->buildService->getBuilds($dto);
     }
 
     public function checkBuildIsReady(Request $request)

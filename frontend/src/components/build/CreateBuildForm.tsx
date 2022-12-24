@@ -7,12 +7,23 @@ import { GetComponentDto } from '../../models/component/get-component.dto';
 import { rules } from '../../utils/form/rules';
 import BuildService from '../../services/build/BuildService';
 import CheckStatus from './CheckStatus';
+import { GetBuildDto } from '../../models/build/get-build.dto';
+import { UpdateBuildDto } from '../../models/build/create-build.dto';
+import { useNavigate } from 'react-router-dom';
 
-const CreateBuildForm: FC = () => {
+interface CreateBuildFormProps {
+	build?: GetBuildDto;
+}
+
+const CreateBuildForm: FC<CreateBuildFormProps> = ({ build }) => {
+	const navigate = useNavigate();
 	const { data, isSuccess } = useQuery({
 		queryKey: ['get component types'],
 		queryFn: ComponentTypeService.getComponentTypes,
 	});
+
+	const isUpdateForm = build != null;
+
 	const {
 		mutate: checkBuild,
 		data: checkStatus,
@@ -27,7 +38,18 @@ const CreateBuildForm: FC = () => {
 		mutationFn: BuildService.createBuild,
 	});
 
-	const [components, setComponents] = useState<GetComponentDto[]>([]);
+	const { mutate: updateBuild } = useMutation<
+		GetBuildDto,
+		any,
+		[buildId: number, updateBuildDto: UpdateBuildDto]
+	>({
+		mutationFn: async ([buildId, updateBuildDto]) =>
+			await BuildService.updateBuild(buildId, updateBuildDto),
+	});
+
+	const [components, setComponents] = useState<GetComponentDto[]>(
+		build?.components ?? [],
+	);
 
 	useEffect(() => {
 		if (components.length > 0) {
@@ -38,12 +60,7 @@ const CreateBuildForm: FC = () => {
 
 	const onComponentAdd = useCallback((component: GetComponentDto) => {
 		setComponents(prevState => {
-			const componentIndexToReplace = prevState.findIndex(
-				x => x.type === component.type,
-			);
-
-			delete prevState[componentIndexToReplace];
-
+			prevState.filter(x => x.type !== component.type);
 			return [...prevState, component].filter(Boolean);
 		});
 	}, []);
@@ -61,7 +78,8 @@ const CreateBuildForm: FC = () => {
 
 	const onFinish = (values: any): void => {
 		const dto = { ...values, componentsIds: components.map(x => x.id) };
-		createBuild(dto);
+		!isUpdateForm ? createBuild(dto) : updateBuild([build.id, dto]);
+		navigate(-1);
 	};
 
 	return (
@@ -99,6 +117,7 @@ const CreateBuildForm: FC = () => {
 					rules={[rules.required()]}
 					label={'Название сборки'}
 					name={'name'}
+					initialValue={build?.name}
 				>
 					<Input size={'large'} />
 				</Form.Item>
@@ -108,6 +127,7 @@ const CreateBuildForm: FC = () => {
 					style={{ minWidth: '50%' }}
 					label={'Описание'}
 					name={'description'}
+					initialValue={build?.description}
 				>
 					<Input.TextArea rows={4} size={'large'} />
 				</Form.Item>
@@ -115,7 +135,7 @@ const CreateBuildForm: FC = () => {
 			<Row justify={'center'} gutter={50} style={{ paddingTop: '4em' }}>
 				<Form.Item>
 					<Button type="primary" htmlType="submit">
-						Создать
+						{isUpdateForm ? 'Изменить' : 'Создать'}
 					</Button>
 				</Form.Item>
 			</Row>

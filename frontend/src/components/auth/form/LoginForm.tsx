@@ -16,6 +16,7 @@ const LoginForm: React.FC = () => {
 			setAuthToken(data.accessToken);
 			setAxiosAuthToken(data.accessToken);
 			navigate(RouteNames.MAIN);
+			window.location.reload();
 		},
 		onError: error => {
 			setError('Неправильный логин или пароль');

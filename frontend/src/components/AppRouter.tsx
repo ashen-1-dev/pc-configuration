@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { authUserRoutes, publicRoutes } from '../router';
+import { authUserRoutes, publicRoutes, RouteNames } from '../router';
+import NotFound from '../pages/NotFound';
 
 const AppRouter: React.FC = () => {
 	const userIsAuth = !!localStorage.getItem('accessToken');
@@ -22,6 +23,11 @@ const AppRouter: React.FC = () => {
 						element={<route.component />}
 					/>
 				))}
+			<Route
+				key={RouteNames.NOTFOUND}
+				path={'*'}
+				element={<NotFound />}
+			/>
 		</Routes>
 	);
 };

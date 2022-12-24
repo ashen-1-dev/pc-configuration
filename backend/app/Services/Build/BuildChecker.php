@@ -8,6 +8,7 @@ use App\Http\Controllers\Build\dto\BuildChecker\EnergyConsumptionStatus;
 use App\Http\Controllers\Build\dto\BuildChecker\RequirementComponentsStatus;
 use App\Http\Controllers\Build\dto\CheckBuildResult;
 use App\Http\Controllers\Build\dto\CreateBuildDto;
+use App\Http\Controllers\Build\dto\EditBuildDto;
 use App\Http\Controllers\Build\dto\GetBuildDto;
 use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Http\Controllers\Component\dto\GetComponentDto;
@@ -18,7 +19,7 @@ use Spatie\LaravelData\DataCollection;
 class BuildChecker
 {
 
-    public function checkBuildIsReady(GetBuildDto|RawBuildDto|CreateBuildDto $dto): CheckBuildResult
+    public function checkBuildIsReady(GetBuildDto|RawBuildDto|CreateBuildDto|EditBuildDto $dto): CheckBuildResult
     {
 
         $components = $dto instanceof GetBuildDto ?

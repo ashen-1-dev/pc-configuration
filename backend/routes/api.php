@@ -42,8 +42,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/me', [UserController::class, 'getAuthUser']);
 });
 
+
 // BUILD
 
 Route::apiResource('builds', BuildController::class)->middleware(['auth:sanctum']);
 Route::get('/builds/{id}/add', [BuildController::class, 'addBuildToUser'])->middleware(['auth:sanctum']);
 Route::post('/builds/check', [BuildController::class, 'checkBuildIsReady'])->middleware(['auth:sanctum']);
+Route::get('/users/builds/my', [BuildController::class, 'getAuthUserBuilds'])->middleware(['auth:sanctum']);

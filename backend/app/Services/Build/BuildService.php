@@ -10,13 +10,20 @@ use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Models\Build\Build;
 use App\Models\User\User;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class BuildService
 {
     /** @return GetBuildDto[] */
-    public function getBuilds(): array
+    public function getBuilds(BuildQuery $buildQuery): array
     {
-        return GetBuildDto::collection(Build::with(['user', 'components'])->get())->toArray();
+        return GetBuildDto::collection(
+            Build::with(['user', 'components'])
+                ->when($buildQuery->userId, function ($query) use ($buildQuery) {
+                    $query->where('user_id', '=', $buildQuery->userId);
+                })
+                ->get()
+        )->toArray();
     }
 
     public function getBuild(int $id): GetBuildDto
@@ -29,30 +36,34 @@ class BuildService
         $build = Build::create([
             ...$createBuildDto->toArray(),
             'user_id' => $userId,
-            'is_ready' => (new BuildChecker)->checkBuildIsReady($createBuildDto)->isReady
+            'is_ready' => $this->checkBuildIsReady($createBuildDto)->isReady
         ]);
         $build->components()->attach($createBuildDto->componentsIds);
         $build->load(['components', 'user']);
         return GetBuildDto::from($build);
     }
 
-    /** @return GetBuildDto[] */
-    public function addBuild(int $buildId, int $userId): array
+    public function addBuild(int $buildId, int $userId): GetBuildDto
     {
         $user = User::findOrFail($userId);
-        $build = Build::with(['components'])->findOrFail($buildId);
+        $build = Build::findOrFail($buildId)->load('components');
         if ($user->builds->contains($buildId)) {
             throw ValidationException::withMessages(['build already yours']);
         }
         $componentIds = $build->components->map(fn($c) => $c->id)->toArray();
-        $dto = CreateBuildDto::from([...$build->toArray(), 'components' => $componentIds]);
-        $this->createBuild($dto, $userId);
-        return GetBuildDto::collection($user->builds()->with(['components'])->get())->toArray();
+        $dto = CreateBuildDto::from([...$build->toArray(), 'componentsIds' => $componentIds]);
+        return $this->createBuild($dto, $userId);
     }
 
     public function removeBuild($id): void
     {
+        $userId = \Auth::id();
         $build = Build::findOrFail($id);
+
+        if ($build->user_id !== $userId) {
+            throw new BadRequestException("can't delete not your build");
+        }
+
         $build->components()->detach();
         $build->delete();
     }
@@ -62,7 +73,7 @@ class BuildService
         $build = Build::with('components', 'user')->findOrFail($id);
         $build->updateOrFail(array_filter([
             ...$editBuildDto->toArray(),
-            'is_ready' => (new BuildChecker())->checkBuildIsReady($editBuildDto)->isReady
+            'is_ready' => $this->checkBuildIsReady($editBuildDto)->isReady
         ]));
         if (isset($editBuildDto->componentsIds)) {
             $build->components()->sync($editBuildDto->componentsIds);
@@ -71,7 +82,9 @@ class BuildService
         return GetBuildDto::from($build);
     }
 
-    public function checkBuildIsReady(GetBuildDto|RawBuildDto $getBuildDto): CheckBuildResult
+    public function checkBuildIsReady(
+        GetBuildDto|RawBuildDto|CreateBuildDto|EditBuildDto $getBuildDto
+    ): CheckBuildResult
     {
         $checker = new BuildChecker();
         return $checker->checkBuildIsReady($getBuildDto);

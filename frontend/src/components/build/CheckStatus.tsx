@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { CheckBuildResult } from '../../models/build/check-build.result';
 import { Row, Typography } from 'antd';
 import { getCheckBuildStatus } from '../../models/build-ready-status/check-build-status';
+import { TypeName } from '../../models/type/types';
 
 interface CheckStatusProps {
 	checkStatus: CheckBuildResult;
@@ -32,12 +33,39 @@ const CheckStatus: FC<CheckStatusProps> = ({ checkStatus }) => {
 			</Row>
 			<Row>
 				{!buildCompatibleStatus.isCompatible && (
-					<div>Сборка имеет не совместимые комплектующие</div>
+					<div>
+						<p>Сборка имеет не совместимые комплектующие:</p>
+						<div>
+							{buildCompatibleStatus.componentsStatus.map(cs => (
+								<div>
+									{cs.notCompatibleComponents?.map(x => (
+										<div key={x.component.id}>
+											{x.component.name} : {x.message}
+										</div>
+									))}
+								</div>
+							))}
+						</div>
+					</div>
 				)}
 			</Row>
 			<Row>
 				{!energyConsumptionStatus.isEnough && (
-					<div>Не хватает питание</div>
+					<div>Не хватает питания</div>
+				)}
+			</Row>
+			<Row>
+				{!requirementComponentsStatus.success && (
+					<div>
+						Отсутсвуют необходимые комплектующие:
+						<ul>
+							{requirementComponentsStatus.missingComponentsType.map(
+								mc => (
+									<li key={mc}>{TypeName[mc]}</li>
+								),
+							)}
+						</ul>
+					</div>
 				)}
 			</Row>
 		</div>

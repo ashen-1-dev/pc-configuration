@@ -4,6 +4,12 @@ export class CreateBuildDto {
 	public componentsIds: number[];
 }
 
+export class UpdateBuildDto {
+	public name?: string;
+	public description?: string;
+	public componentsIds: number[];
+}
+
 export class CheckCompatibleDto {
 	public componentsIds: number[];
 }
