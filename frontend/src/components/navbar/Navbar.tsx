@@ -33,8 +33,12 @@ const Navbar: FC = () => {
 						>
 							Сборка
 						</Menu.Item>
-						<Menu.Item key={3}>О нас</Menu.Item>
-						<Menu.Item key={4}>FAQ</Menu.Item>
+						<Menu.Item
+							key={4}
+							onClick={() => navigate(RouteNames.COMPONENTS)}
+						>
+							Компоненты
+						</Menu.Item>
 						<Menu.Item
 							onClick={() => navigate(RouteNames.USERSBUILDS)}
 							key={5}

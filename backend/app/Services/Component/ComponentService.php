@@ -20,23 +20,9 @@ class ComponentService
 
     public function getComponents(ComponentQuery $componentQuery)
     {
-        $filterQuery = array_filter([
-            'type.name' => $componentQuery->type ?? $componentQuery->type
-        ]);
-
-        if (empty($filterQuery)) {
-            return $this->getAllComponents();
-        }
-
-        $components = Component::with(['attributes', 'type'])
-            ->get()
-            ->where('type.name', '=', $filterQuery['type.name']);
-//FIXME
-//            ->where(function (Builder $q) use ($filterQuery) {
-//            foreach ($filterQuery as $key => $value) {
-//                $q->where($key, '=', $value);
-//            }
-//        })->get();
+        $components = Component::filter($componentQuery)
+            ->with(['attributes', 'type'])
+            ->get();
 
         return $components->map(fn($component) => GetComponentDto::fromModel($component))->values();
     }

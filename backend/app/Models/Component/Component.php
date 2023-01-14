@@ -2,7 +2,11 @@
 
 namespace App\Models\Component;
 
+use App\Filters\Component\ComponentFilter;
+use App\Filters\SpecialistCatalog\SpecialistFilter;
+use App\Http\Controllers\Component\dto\ComponentQuery;
 use App\Models\Build\Build;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,5 +35,10 @@ class Component extends Model
     public function attributes()
     {
         return $this->hasMany(Attribute::class);
+    }
+
+    public function scopeFilter(Builder $query, ComponentQuery $componentQuery): Builder
+    {
+        return (new ComponentFilter($componentQuery))->apply($query);
     }
 }

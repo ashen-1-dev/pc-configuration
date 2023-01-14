@@ -16,7 +16,7 @@ interface ComponentTypesListProps {
 
 const ComponentTypesList: FC<ComponentTypesListProps> = ({
 	items,
-	label,
+	label = 'Компоненты',
 	onComponentAdd,
 	onComponentDelete,
 }) => {

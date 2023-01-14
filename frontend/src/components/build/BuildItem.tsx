@@ -3,6 +3,8 @@ import { Button, Card, Image, List, Typography } from 'antd';
 import { getCheckBuildStatus } from '../../models/build-ready-status/check-build-status';
 import { GetBuildDto } from '../../models/build/get-build.dto';
 import { UserContext } from '../../App';
+import { GetComponentDto } from '../../models/component/get-component.dto';
+import ComponentModal from '../component/component-item/ComponentModal';
 
 interface BuildItemProps {
 	build: GetBuildDto;
@@ -19,6 +21,15 @@ const BuildItem: FC<BuildItemProps> = ({
 }) => {
 	const user = useContext(UserContext);
 	const [isAdded, setIsAdded] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [modalContent, setModalContent] = useState<GetComponentDto | null>();
+
+	const onComponentClick = (component: GetComponentDto) => {
+		setModalContent(component);
+		setIsModalOpen(true);
+	};
+
+	const onCancel = () => setIsModalOpen(false);
 
 	const handleOnAdd = (build: GetBuildDto) => {
 		onBuildAdd != null && onBuildAdd(build);
@@ -75,9 +86,13 @@ const BuildItem: FC<BuildItemProps> = ({
 				grid={{ column: build.components.length }}
 				dataSource={build.components}
 				renderItem={component => (
-					<List.Item>
-						<Card title={component.name}>
+					<List.Item onClick={() => onComponentClick(component)}>
+						<Card
+							style={{ cursor: 'pointer' }}
+							title={component.name}
+						>
 							<Image
+								onClick={e => e.stopPropagation()}
 								width={100}
 								height={100}
 								src={component.photoUrl}
@@ -86,6 +101,13 @@ const BuildItem: FC<BuildItemProps> = ({
 					</List.Item>
 				)}
 			/>
+			{modalContent != null && (
+				<ComponentModal
+					onCancel={onCancel}
+					open={isModalOpen}
+					component={modalContent}
+				/>
+			)}
 		</div>
 	);
 };

@@ -20,6 +20,8 @@ const CreateBuildForm: FC<CreateBuildFormProps> = ({ build }) => {
 	const { data, isSuccess } = useQuery({
 		queryKey: ['get component types'],
 		queryFn: ComponentTypeService.getComponentTypes,
+		refetchInterval: false,
+		refetchOnWindowFocus: false,
 	});
 
 	const isUpdateForm = build != null;

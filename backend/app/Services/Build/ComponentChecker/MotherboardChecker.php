@@ -29,7 +29,7 @@ class MotherboardChecker extends ComponentChecker
         }
 
         if ($otherComponent->type == 'cpu_cooler') {
-            $data = Checkers::checkWithCPUWithCPUCooler($source, $otherComponent);
+            $data = Checkers::checkCPUWithCPUCooler($source, $otherComponent);
         }
 
         return $data;

@@ -14,6 +14,7 @@ use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Http\Controllers\Component\dto\GetComponentDto;
 use App\Models\Component\Component;
 use App\Services\Build\ComponentChecker\Checkers;
+use App\Services\Build\Enums\RequiredComponentsForBuild;
 use Spatie\LaravelData\DataCollection;
 
 class BuildChecker
@@ -144,7 +145,9 @@ class BuildChecker
                 continue;
             }
 
-            $total += $attribute->value;
+            if (is_int($attribute->value)) {
+                $total += $attribute->value;
+            }
         }
 
         return $total;

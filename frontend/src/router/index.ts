@@ -39,12 +39,12 @@ export const publicRoutes: IRoute[] = [
 
 export const authUserRoutes: IRoute[] = [
 	{
-		uri: RouteNames.COMPONENTS,
-		component: Component,
-	},
-	{
 		uri: RouteNames.CREATEBUILD,
 		component: CreateBuild,
+	},
+	{
+		uri: RouteNames.COMPONENTS,
+		component: Component,
 	},
 	{
 		uri: RouteNames.MYBUILDS,

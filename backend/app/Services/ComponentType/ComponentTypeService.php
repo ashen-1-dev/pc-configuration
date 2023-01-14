@@ -20,6 +20,6 @@ class ComponentTypeService
     {
         $type = Type::with('requiredAttributes')->where('name', $typeName)->firstOrFail();
         $attributes = $type->requiredAttributes;
-        return GetRequiredAttribute::collection($attributes)->wrap('attributes')->toArray();
+        return GetRequiredAttribute::collection($attributes)->toArray();
     }
 }

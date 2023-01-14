@@ -11,7 +11,7 @@ import { RouteNames } from '../../router';
 const MyBuilds = () => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
-	const { data } = useQuery({
+	const query = useQuery({
 		queryKey: ['get auth user builds'],
 		queryFn: async () => await BuildService.getAuthUserBuilds(),
 		onSuccess: data => {
@@ -40,6 +40,8 @@ const MyBuilds = () => {
 		<MainLayout>
 			<Row style={{ paddingTop: '20px' }} justify={'center'}>
 				<Typography.Title>Мои сборки</Typography.Title>
+			</Row>
+			<Row style={{ paddingTop: '20px' }}>
 				{builds != null && (
 					<BuildList
 						onBuildUpdate={onBuildUpdate}

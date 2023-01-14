@@ -7,7 +7,8 @@ use Spatie\LaravelData\Data;
 class GetRequiredAttribute extends Data
 {
     public function __construct(
-        public $name
+        public string $name,
+        public ?array $list,
     )
     {
     }

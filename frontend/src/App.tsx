@@ -11,11 +11,13 @@ export const UserContext = createContext<GetUserDto | undefined>(undefined);
 
 const App: FC = () => {
 	const [user, setUser] = useState<GetUserDto | undefined>();
+	const fetchUser = async () => {
+		return await AuthServce.authUser();
+	};
+
 	useEffect(() => {
-		const fetchUser = async () => {
-			setUser(await AuthServce.authUser());
-		};
-		fetchUser();
+		if (user != null) return;
+		fetchUser().then(response => setUser(response));
 	}, []);
 
 	return (

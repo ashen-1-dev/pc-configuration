@@ -3,15 +3,15 @@
 namespace Database\Seeders;
 
 
-use App\Core\Components\RequiredAttributes\CPU;
-use App\Core\Components\RequiredAttributes\DiskDrive;
-use App\Core\Components\RequiredAttributes\GPU;
-use App\Core\Components\RequiredAttributes\Motherboard;
-use App\Core\Components\RequiredAttributes\PCCase;
-use App\Core\Components\RequiredAttributes\PowerSupply;
-use App\Core\Components\RequiredAttributes\RAM;
+use App\Core\Components\CPU\CPU;
+use App\Core\Components\Diskdrive\DiskDrive;
+use App\Core\Components\GPU\GPU;
+use App\Core\Components\Motherboard\Motherboard;
+use App\Core\Components\PCCase\PCCase;
+use App\Core\Components\PowerSupply\PowerSupply;
+use App\Core\Components\RAM\RAM;
+use App\Models\Component\RequiredAttribute;
 use App\Models\Component\Type;
-use DB;
 use Illuminate\Database\Seeder;
 
 class RequiredAttributeSeeder extends Seeder
@@ -23,29 +23,30 @@ class RequiredAttributeSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('required_attributes')->insert($this->bootstrap());
+        RequiredAttribute::insert($this->bootstrap());
     }
 
     private function bootstrap(): array
     {
-        $component_types = Type::where('required', '=', true)->get();
+        $componentTypes = Type::where('required', '=', true)->get();
         $requiredAttributes = [
-            PCCase::$name => PCCase::getAttributes(),
-            RAM::$name => RAM::getAttributes(),
-            CPU::$name => CPU::getAttributes(),
-            GPU::$name => GPU::getAttributes(),
-            DiskDrive::$name => DiskDrive::getAttributes(),
-            PowerSupply::$name => PowerSupply::getAttributes(),
-            Motherboard::$name => Motherboard::getAttributes(),
+            'case' => new PCCase(),
+            'ram' => new RAM(),
+            'cpu' => new CPU(),
+            'gpu' => new GPU(),
+            'diskdrive' => new DiskDrive(),
+            'powersupply' => new PowerSupply(),
+            'motherboard' => new Motherboard(),
         ];
         $result = [];
         //FIXME: optimize
-        foreach ($component_types as $component_type) {
-            $attributes = $requiredAttributes[$component_type->name];
-            foreach ($attributes as $attribute) {
+        foreach ($componentTypes as $componentType) {
+            $attributes = $requiredAttributes[$componentType->name]->attributes;
+            foreach ($attributes as $name => $attribute) {
                 $result[] = [
-                    'component_type_id' => $component_type->id,
-                    'name' => $attribute
+                    'component_type_id' => $componentType->id,
+                    'name' => $name,
+                    'list' => isset($attribute['list']) ? json_encode($attribute['list']) : null
                 ];
             }
         }

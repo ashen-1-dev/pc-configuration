@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Component\Type as ComponentType;
-use App\Services\Build\RequiredComponentsForBuild;
+use App\Services\Build\Enums\RequiredComponentsForBuild;
 use Illuminate\Database\Seeder;
 
 class RequiredComponentsSeeder extends Seeder
@@ -15,9 +15,9 @@ class RequiredComponentsSeeder extends Seeder
      */
     public function run()
     {
-        $component_types = RequiredComponentsForBuild::cases();
-        foreach ($component_types as $component_type) {
-            ComponentType::create(['name' => $component_type->value, 'required' => true])->save();
+        $componentTypes = RequiredComponentsForBuild::cases();
+        foreach ($componentTypes as $componentType) {
+            ComponentType::create(['name' => $componentType->value, 'required' => true])->save();
         }
     }
 }

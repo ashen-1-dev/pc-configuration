@@ -2,10 +2,10 @@
 
 namespace App\Services\Build\ComponentChecker;
 
+use App\Core\Components\Motherboard\MotherboardFormFactor;
+use App\Core\Components\PowerSupply\PowerSupplyFormFactor;
 use App\Http\Controllers\Build\dto\BuildChecker\CompatibleChecker\CheckerResult;
 use App\Http\Controllers\Component\dto\GetComponentDto;
-use App\Services\Build\MotherboardFormFactor;
-use App\Services\Build\PowerSupplyFormFactor;
 
 class Checkers
 {
@@ -113,7 +113,7 @@ class Checkers
         return $checkerResult;
     }
 
-    public static function checkWithCPUWithCPUCooler(GetComponentDto $cpu, GetComponentDto $cpuCooler): CheckerResult
+    public static function checkCPUWithCPUCooler(GetComponentDto $cpu, GetComponentDto $cpuCooler): CheckerResult
     {
         $checkerResult = new CheckerResult(isCompatible: true, message: '');
         $cpuSocket = $cpu->attributes->where('name', '=', 'socket')->first()->value;

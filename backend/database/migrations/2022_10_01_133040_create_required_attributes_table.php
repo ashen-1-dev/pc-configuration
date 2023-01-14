@@ -15,9 +15,9 @@ return new class extends Migration {
         Schema::create('required_attributes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('component_type_id')
-                ->constrained()
-                ->cascadeOnDelete();
+                ->constrained();
             $table->string('name');
+            $table->json('list')->nullable();
         });
     }
 

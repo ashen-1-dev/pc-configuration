@@ -6,6 +6,7 @@ import ComponentTypeService from '../../../services/type/component-type.service'
 import { UploadOutlined } from '@ant-design/icons';
 import ComponentService from '../../../services/component/ComponentService';
 import { convertDataToCreateComponentDto } from '../../../pages/component/helper';
+import { GetRequiredAttributesDto } from '../../../models/type/GetRequiredAttributes.dto';
 
 interface CreateComponentFormProps {
 	form?: FormInstance;
@@ -24,15 +25,21 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 	onSuccess,
 }) => {
 	const [selectedType, setSelectedType] = useState<string | null>(null);
+	const [requiredAttributes, setRequiredAttributes] = useState<
+		GetRequiredAttributesDto[] | null
+	>(null);
 	// FIXME: refactor
 	const client = useQueryClient();
-	const { data: requiredAttributes, refetch } = useQuery({
+	const query = useQuery({
 		queryKey: ['required-attributes', selectedType],
+		enabled: !(selectedType == null),
 		queryFn: async () =>
 			await ComponentTypeService.getRequiredAttributes(
 				selectedType as string,
 			),
-		enabled: !!selectedType,
+		onSuccess: data => setRequiredAttributes(data),
+		refetchOnWindowFocus: false,
+		refetchInterval: false,
 	});
 	const { data: componentTypes } = useQuery({
 		queryKey: ['get component types'],
@@ -44,21 +51,21 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 		mutationKey: ['create component'],
 		onSuccess: async () => {
 			await client.invalidateQueries(['components']);
-			form?.resetFields();
 		},
 	});
 
 	const onTypeChange = async (type: string): Promise<void> => {
 		setSelectedType(type);
-		await refetch();
 	};
 
 	const onFinish = (values: any): void => {
-		console.log('values: ', values);
+		console.log('values', values);
 		const dto = convertDataToCreateComponentDto(values);
 		mutate(dto);
 		onSuccess();
 	};
+
+	console.log(requiredAttributes);
 	return (
 		<Form
 			form={form}
@@ -79,33 +86,41 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 			<Form.Item name={'description'} label={'Описание'}>
 				<Input.TextArea size={'large'} />
 			</Form.Item>
-			{selectedType &&
-				requiredAttributes?.map((x, i) => (
-					<Space
-						style={{
-							display: 'flex',
-							justifyContent: 'center',
-						}}
-						align="baseline"
-						key={x.name}
+			{requiredAttributes?.map((ra, i) => (
+				// FIXME
+				<Space align="baseline" key={ra.name}>
+					<Form.Item
+						initialValue={ra.name}
+						name={['attributes', i, 'name']}
+						required
 					>
-						<Form.Item
-							initialValue={x.name}
-							name={['attributes', i, 'name']}
-						>
-							<Input
-								style={{ color: 'rgba(0,0,0,.85)' }}
-								disabled
+						<Input
+							defaultValue={ra.name}
+							size={'large'}
+							style={{ color: 'rgba(0,0,0,.85)' }}
+							disabled
+						/>
+					</Form.Item>
+					<Form.Item
+						rules={[rules.required()]}
+						name={['attributes', i, 'value']}
+					>
+						{ra.list != null ? (
+							<Select
+								size={'large'}
+								placeholder={'Выберите'}
+								style={{ minWidth: '136px' }}
+								options={ra.list.map(i => ({
+									label: i,
+									value: i,
+								}))}
 							/>
-						</Form.Item>
-						<Form.Item
-							rules={[rules.required()]}
-							name={['attributes', i, 'value']}
-						>
-							<Input />
-						</Form.Item>
-					</Space>
-				))}
+						) : (
+							<Input size={'large'} />
+						)}
+					</Form.Item>
+				</Space>
+			))}
 			<Form.List name="attributesOptional">
 				{(fields, { add, remove }) => (
 					<>
@@ -115,18 +130,20 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 								style={{
 									display: 'flex',
 									marginBottom: 8,
-									justifyContent: 'center',
 								}}
 								align="baseline"
 							>
 								<Form.Item {...restField} name={[name, 'name']}>
-									<Input />
+									<Input
+										size={'large'}
+										style={{ color: 'rgba(0,0,0,.85)' }}
+									/>
 								</Form.Item>
 								<Form.Item
 									{...restField}
 									name={[name, 'value']}
 								>
-									<Input />
+									<Input size={'large'} />
 								</Form.Item>
 							</Space>
 						))}
