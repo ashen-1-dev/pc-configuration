@@ -9,7 +9,9 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class BuildQuery extends \Spatie\LaravelData\Data
 {
     public function __construct(
-        public ?int $userId = null,
+        public ?int    $userId = null,
+        public ?string $q = null,
+        public ?bool   $ready = null,
     )
     {
     }

@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RequiredComponentsSeeder::class,
             RequiredAttributeSeeder::class,
+            RoleSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

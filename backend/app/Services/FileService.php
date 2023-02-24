@@ -16,6 +16,6 @@ class FileService
 
     private function getStaticUrlToFile(string $raw): string
     {
-        return stripslashes(Storage::url($raw));
+        return preg_replace('#/+#', '/', Storage::url($raw));
     }
 }

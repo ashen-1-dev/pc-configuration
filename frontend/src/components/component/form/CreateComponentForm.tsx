@@ -1,12 +1,12 @@
-import { Button, Form, FormInstance, Input, Select, Space, Upload } from 'antd';
-import React, { FC, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { rules } from '../../../utils/form/rules';
+import {Button, Form, FormInstance, Input, Select, Space, Upload} from 'antd';
+import React, {FC, useState} from 'react';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {rules} from '../../../utils/form/rules';
 import ComponentTypeService from '../../../services/type/component-type.service';
-import { UploadOutlined } from '@ant-design/icons';
+import {UploadOutlined} from '@ant-design/icons';
 import ComponentService from '../../../services/component/ComponentService';
-import { convertDataToCreateComponentDto } from '../../../pages/component/helper';
-import { GetRequiredAttributesDto } from '../../../models/type/GetRequiredAttributes.dto';
+import {convertDataToCreateComponentDto} from '../../../pages/component/helper';
+import {GetRequiredAttributesDto} from '../../../models/type/GetRequiredAttributes.dto';
 
 interface CreateComponentFormProps {
 	form?: FormInstance;
@@ -14,23 +14,21 @@ interface CreateComponentFormProps {
 }
 
 // @ts-expect-error
-const dummyRequest = ({ onSuccess }): void => {
+const dummyRequest = ({onSuccess}): void => {
 	setTimeout(() => {
 		onSuccess('ok');
 	}, 0);
 };
 
 const CreateComponentForm: FC<CreateComponentFormProps> = ({
-	form,
-	onSuccess,
-}) => {
+															   form,
+															   onSuccess,
+														   }) => {
 	const [selectedType, setSelectedType] = useState<string | null>(null);
-	const [requiredAttributes, setRequiredAttributes] = useState<
-		GetRequiredAttributesDto[] | null
-	>(null);
+	const [requiredAttributes, setRequiredAttributes] = useState<GetRequiredAttributesDto[] | null>(null);
 	// FIXME: refactor
 	const client = useQueryClient();
-	const query = useQuery({
+	useQuery({
 		queryKey: ['required-attributes', selectedType],
 		enabled: !(selectedType == null),
 		queryFn: async () =>
@@ -41,12 +39,12 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 		refetchOnWindowFocus: false,
 		refetchInterval: false,
 	});
-	const { data: componentTypes } = useQuery({
+	const {data: componentTypes} = useQuery({
 		queryKey: ['get component types'],
 		queryFn: ComponentTypeService.getComponentTypes,
 		refetchInterval: false,
 	});
-	const { mutate } = useMutation({
+	const {mutate} = useMutation({
 		mutationFn: ComponentService.createComponent,
 		mutationKey: ['create component'],
 		onSuccess: async () => {
@@ -65,14 +63,13 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 		onSuccess();
 	};
 
-	console.log(requiredAttributes);
 	return (
 		<Form
 			form={form}
 			name="component"
-			labelCol={{ span: 8 }}
-			wrapperCol={{ span: 16 }}
-			initialValues={{ remember: true }}
+			labelCol={{span: 8}}
+			wrapperCol={{span: 16}}
+			initialValues={{remember: true}}
 			onFinish={onFinish}
 			autoComplete="off"
 		>
@@ -81,10 +78,10 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 				rules={[rules.required()]}
 				label={'Название'}
 			>
-				<Input />
+				<Input/>
 			</Form.Item>
 			<Form.Item name={'description'} label={'Описание'}>
-				<Input.TextArea size={'large'} />
+				<Input.TextArea size={'large'}/>
 			</Form.Item>
 			{requiredAttributes?.map((ra, i) => (
 				// FIXME
@@ -97,7 +94,7 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 						<Input
 							defaultValue={ra.name}
 							size={'large'}
-							style={{ color: 'rgba(0,0,0,.85)' }}
+							style={{color: 'rgba(0,0,0,.85)'}}
 							disabled
 						/>
 					</Form.Item>
@@ -109,22 +106,22 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 							<Select
 								size={'large'}
 								placeholder={'Выберите'}
-								style={{ minWidth: '136px' }}
+								style={{minWidth: '136px'}}
 								options={ra.list.map(i => ({
 									label: i,
 									value: i,
 								}))}
 							/>
 						) : (
-							<Input size={'large'} />
+							<Input size={'large'}/>
 						)}
 					</Form.Item>
 				</Space>
 			))}
 			<Form.List name="attributesOptional">
-				{(fields, { add, remove }) => (
+				{(fields, {add, remove}) => (
 					<>
-						{fields.map(({ key, name, ...restField }) => (
+						{fields.map(({key, name, ...restFields}) => (
 							<Space
 								key={key}
 								style={{
@@ -133,17 +130,17 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 								}}
 								align="baseline"
 							>
-								<Form.Item {...restField} name={[name, 'name']}>
+								<Form.Item {...restFields} name={[name, 'name']}>
 									<Input
 										size={'large'}
-										style={{ color: 'rgba(0,0,0,.85)' }}
+										style={{color: 'rgba(0,0,0,.85)'}}
 									/>
 								</Form.Item>
 								<Form.Item
-									{...restField}
+									{...restFields}
 									name={[name, 'value']}
 								>
-									<Input size={'large'} />
+									<Input size={'large'}/>
 								</Form.Item>
 							</Space>
 						))}
@@ -158,7 +155,7 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 			<Form.Item
 				name={'photo'}
 				label={'Фото'}
-				getValueFromEvent={({ file }) => file.originFileObj}
+				getValueFromEvent={({file}) => file.originFileObj}
 			>
 				<Upload
 					maxCount={1}
@@ -166,7 +163,7 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 					listType="picture" // @ts-expect-error
 					customRequest={dummyRequest}
 				>
-					<Button icon={<UploadOutlined />}>Загрузить</Button>
+					<Button icon={<UploadOutlined/>}>Загрузить</Button>
 				</Upload>
 			</Form.Item>
 			<Form.Item

@@ -13,6 +13,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthService
 {
+    private readonly FileService $fileService;
+
+    public function __construct(FileService $fileService)
+    {
+        $this->fileService = $fileService;
+    }
+
     public function login(LoginUserDto $loginUserDto)
     {
         $user = User::where('email', $loginUserDto->email)->first();
@@ -31,7 +38,15 @@ class AuthService
             throw new NotFoundHttpException('user already exists');
         }
         $createUserDto->password = Hash::make($createUserDto->password);
-        $user = User::create($createUserDto->toArray());
+        $user = User::create($createUserDto->toArray())->addRole('user');
+
+        if (!isset($createUserDto->photo)) {
+            $filePath = 'storage/default-user-avatar.png';
+        } else {
+            $filePath = $this->fileService->uploadFile("users/$user->id/avatar/", $createUserDto->photo);
+        }
+        
+        $user->update(['photo_url' => $filePath]);
         return ['accessToken' => $user->createToken('accessToken')->plainTextToken];
     }
 

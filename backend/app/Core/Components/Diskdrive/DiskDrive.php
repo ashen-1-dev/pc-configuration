@@ -11,6 +11,7 @@ class DiskDrive extends Component
 
     public function __construct()
     {
+        //TODO:Проконсультироваться касательно проверки совместимости накопителя и остальных комплектующих
         $this->name = 'diskdrive';
         $this->attributes = [
             'volume' => [],

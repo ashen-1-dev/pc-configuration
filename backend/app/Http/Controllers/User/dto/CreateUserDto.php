@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\User\dto;
 
+use File;
+use Illuminate\Http\UploadedFile;
 use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Attributes\Validation\Mimes;
 use Spatie\LaravelData\Attributes\Validation\Password;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
@@ -14,13 +17,16 @@ class CreateUserDto extends \Spatie\LaravelData\Data
 {
     public function __construct(
         #[Required, Email]
-        public string $email,
+        public string                 $email,
         #[Required, Password(min: 4)]
-        public string $password,
+        public string                 $password,
         #[Required, StringType]
-        public string $firstName,
+        public string                 $firstName,
         #[Required, StringType]
-        public string $lastName,
+        public string                 $lastName,
+        #[\Spatie\LaravelData\Attributes\Validation\File, Mimes('jpg', 'png', 'jpeg')]
+        public File|UploadedFile|null $photo,
+
     )
     {
     }

@@ -1,9 +1,9 @@
-import { GetComponentDto } from '../../models/component/get-component.dto';
-import { axiosInstance } from '../../config/axios';
-import { CreateComponentDto } from '../../models/component/create-component.dto';
-import { serialize } from 'object-to-formdata';
-import { ComponentQuery } from './component-query';
-import { getUrlQueryStringFromObject } from '../../utils/uri';
+import {GetComponentDto} from '../../models/component/get-component.dto';
+import {axiosInstance} from '../../config/axios';
+import {CreateComponentDto} from '../../models/component/create-component.dto';
+import {serialize} from 'object-to-formdata';
+import {ComponentQuery} from './component-query';
+import {getUrlQueryStringFromObject} from '../../utils/uri';
 
 class ComponentServiceImpl {
 	public async getComponents(
@@ -23,9 +23,19 @@ class ComponentServiceImpl {
 	public async createComponent(
 		createComponentDto: CreateComponentDto,
 	): Promise<GetComponentDto[]> {
-		const formData = serialize(createComponentDto, { indices: true });
+		const formData = serialize(createComponentDto, {indices: true});
 		return await axiosInstance
 			.post<GetComponentDto[]>('/components', formData)
+			.then(response => response.data);
+	}
+
+	public async updateComponent(
+		id: number,
+		updateComponentDto: Partial<CreateComponentDto>,
+	): Promise<GetComponentDto> {
+		const formData = serialize(updateComponentDto, {indices: true});
+		return await axiosInstance
+			.put<GetComponentDto>(`/components/${id}`, formData)
 			.then(response => response.data);
 	}
 }

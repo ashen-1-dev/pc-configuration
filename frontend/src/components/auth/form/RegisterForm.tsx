@@ -1,14 +1,23 @@
-import React, { FC } from 'react';
-import { Button, Form, Input } from 'antd';
-import { rules } from '../../../utils/form/rules';
-import { useMutation } from '@tanstack/react-query';
+import React, {FC, useState} from 'react';
+import {Button, Form, Input, Upload} from 'antd';
+import {rules} from '../../../utils/form/rules';
+import {useMutation} from '@tanstack/react-query';
 import AuthServce from '../../../services/auth/AuthServce';
-import { RouteNames } from '../../../router';
-import { useNavigate } from 'react-router-dom';
+import {RouteNames} from '../../../router';
+import {useNavigate} from 'react-router-dom';
+import {UploadOutlined} from "@ant-design/icons";
+
+// @ts-ignore
+const dummyRequest = ({onSuccess}): void => {
+	setTimeout(() => {
+		onSuccess('ok');
+	}, 0);
+};
 
 const RegisterForm: FC = () => {
 	const navigate = useNavigate();
-	const { mutate } = useMutation({
+	const [error, setError] = useState<any>({});
+	const {mutate} = useMutation({
 		mutationKey: ['register user'],
 		mutationFn: AuthServce.register,
 		onSuccess: data => {
@@ -16,16 +25,21 @@ const RegisterForm: FC = () => {
 			navigate(RouteNames.MAIN);
 			window.location.reload();
 		},
+		onError: error => setError(error)
 	});
 
 	const onFinish = (values: any): void => {
 		mutate(values);
 	};
 
+	// @ts-ignore
 	return (
 		<Form name="register" onFinish={onFinish}>
+			<div style={{color: '#ff4d4f'}}>
+				{error?.response?.data?.message}
+			</div>
 			<Form.Item label={'Почта'} name="email" rules={[rules.required()]}>
-				<Input type={'email'} />
+				<Input type={'email'}/>
 			</Form.Item>
 
 			<Form.Item
@@ -33,7 +47,7 @@ const RegisterForm: FC = () => {
 				name="firstName"
 				rules={[rules.required()]}
 			>
-				<Input />
+				<Input/>
 			</Form.Item>
 
 			<Form.Item
@@ -41,7 +55,7 @@ const RegisterForm: FC = () => {
 				name="lastName"
 				rules={[rules.required()]}
 			>
-				<Input />
+				<Input/>
 			</Form.Item>
 
 			<Form.Item
@@ -49,9 +63,24 @@ const RegisterForm: FC = () => {
 				name="password"
 				rules={[rules.required(), rules.min(4)]}
 			>
-				<Input.Password />
+				<Input.Password/>
 			</Form.Item>
-			<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+			<Form.Item
+				label={'Фотография'}
+				name={'photo'}
+				getValueFromEvent={({file}) => file.originFileObj}
+			>
+				<Upload
+					maxCount={1}
+					accept={'image/*'}
+					listType="picture"
+					//@ts-expect-error
+					customRequest={dummyRequest}
+				>
+					<Button icon={<UploadOutlined/>}>Загрузить</Button>
+				</Upload>
+			</Form.Item>
+			<Form.Item wrapperCol={{offset: 8, span: 16}}>
 				<Button
 					shape={'round'}
 					size={'large'}

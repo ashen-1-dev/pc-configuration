@@ -8,6 +8,8 @@ use App\Http\Controllers\Component\dto\GetComponentDto;
 use App\Models\Component\Component;
 use App\Models\Component\Type;
 use App\Services\FileService;
+use Spatie\LaravelData\DataCollection;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class ComponentService
 {
@@ -27,13 +29,6 @@ class ComponentService
         return $components->map(fn($component) => GetComponentDto::fromModel($component))->values();
     }
 
-    public function getAllComponents()
-    {
-        return Component::with(['attributes', 'type'])
-            ->get()
-            ->map(fn($component) => GetComponentDto::fromModel($component));
-    }
-
     public function deleteComponent(int $id)
     {
         $component = Component::findOrFail($id);
@@ -43,12 +38,14 @@ class ComponentService
 
     public function createComponent(CreateComponentDto $createComponentDto): GetComponentDto
     {
+        $typeId = Type::where('name', $createComponentDto->type)->firstOrFail()->id;
+        $this->validateComponents($createComponentDto->attributes, $typeId);
+
         $photoUrl = isset($createComponentDto->photo) ?
             $this
                 ->fileService
                 ->uploadFile('/components/', $createComponentDto->photo)
             : null;
-        $typeId = Type::where('name', $createComponentDto->type)->firstOrFail()->id;
         $component = Component::create($createComponentDto->toModel($typeId, $photoUrl));
         $component->attributes()->createMany($createComponentDto->attributes->toArray());
         return GetComponentDto::fromModel($component);
@@ -64,5 +61,21 @@ class ComponentService
 //            ->attributes
 //            ->map(fn(CreateAttributeDto $x) => $component->attributes()->updateOrCreate($x->toArray()));
         return GetComponentDto::fromModel($component);
+    }
+
+    private function validateComponents(DataCollection $attributes, int $componentTypeId): bool
+    {
+        $requiredAttributes = Type::findOrFail($componentTypeId)->requiredAttributes;
+        foreach ($requiredAttributes as $requiredAttribute) {
+            $attribute = $attributes->where('name', '=', $requiredAttribute->name)->first();
+            if (!isset($attribute)) {
+                throw new UnprocessableEntityHttpException('please fill all required attributes for this component');
+            }
+            $list = $requiredAttribute->list;
+            if (isset($list) && !in_array($attribute->value, $list)) {
+                throw new UnprocessableEntityHttpException('please fill required attributes value with provided list');
+            }
+        }
+        return true;
     }
 }

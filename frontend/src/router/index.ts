@@ -1,4 +1,4 @@
-import Component from '../pages/component/Component';
+import Components from '../pages/component/Components';
 import React from 'react';
 import Main from '../pages/Main';
 import Login from '../pages/login/Login';
@@ -6,6 +6,7 @@ import CreateBuild from '../pages/build/CreateBuild';
 import MyBuilds from '../pages/profile/MyBuilds';
 import UsersBuilds from '../pages/build/UsersBuilds';
 import NotFound from '../pages/NotFound';
+import UserProfile from "../pages/profile/UserProfile";
 
 export interface IRoute {
 	uri: string;
@@ -17,9 +18,10 @@ export enum RouteNames {
 	MAIN = '/',
 	LOGIN = '/login',
 	CREATEBUILD = '/create-build',
+	PROFILE = '/profile',
 	MYBUILDS = '/profile/my-builds',
 	USERSBUILDS = '/users-builds',
-	NOTFOUND = '/not-found',
+	NOTFOUND = '/not-found'
 }
 
 export const publicRoutes: IRoute[] = [
@@ -30,6 +32,14 @@ export const publicRoutes: IRoute[] = [
 	{
 		uri: RouteNames.LOGIN,
 		component: Login,
+	},
+	{
+		uri: RouteNames.COMPONENTS,
+		component: Components,
+	},
+	{
+		uri: RouteNames.USERSBUILDS,
+		component: UsersBuilds,
 	},
 	{
 		uri: RouteNames.NOTFOUND,
@@ -43,15 +53,11 @@ export const authUserRoutes: IRoute[] = [
 		component: CreateBuild,
 	},
 	{
-		uri: RouteNames.COMPONENTS,
-		component: Component,
-	},
-	{
 		uri: RouteNames.MYBUILDS,
 		component: MyBuilds,
 	},
 	{
-		uri: RouteNames.USERSBUILDS,
-		component: UsersBuilds,
+		uri: RouteNames.PROFILE,
+		component: UserProfile,
 	},
 ];

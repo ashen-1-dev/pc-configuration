@@ -20,7 +20,12 @@ use Illuminate\Support\Facades\Route;
 
 // COMPONENTS
 
-Route::apiResource('components', ComponentController::class)->middleware('auth:sanctum');
+Route::prefix('components')->group(function () {
+    Route::get('/', [ComponentController::class, 'index']);
+    Route::post('/', [ComponentController::class, 'store'])->middleware(['role:admin', 'auth:sanctum']);
+    Route::put('/{id}', [ComponentController::class, 'update'])->middleware(['role:admin', 'auth:sanctum']);;
+    Route::delete('/{id}', [ComponentController::class, 'destroy'])->middleware(['role:admin', 'auth:sanctum']);;
+});
 
 // COMPONENT TYPES
 
@@ -45,7 +50,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 // BUILD
 
-Route::apiResource('builds', BuildController::class)->middleware(['auth:sanctum']);
-Route::get('/builds/{id}/add', [BuildController::class, 'addBuildToUser'])->middleware(['auth:sanctum']);
-Route::post('/builds/check', [BuildController::class, 'checkBuildIsReady'])->middleware(['auth:sanctum']);
+Route::prefix('builds')->group(function () {
+    Route::get('/', [BuildController::class, 'index']);
+    Route::post('/', [BuildController::class, 'store'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [BuildController::class, 'update'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [BuildController::class, 'destroy'])->middleware(['auth:sanctum']);
+    Route::get('/builds/{id}/add', [BuildController::class, 'addBuildToUser'])->middleware(['auth:sanctum']);
+    Route::post('/builds/check', [BuildController::class, 'checkBuildIsReady'])->middleware(['auth:sanctum']);
+});
 Route::get('/users/builds/my', [BuildController::class, 'getAuthUserBuilds'])->middleware(['auth:sanctum']);

@@ -1,23 +1,25 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import ComponentItem from '../component-item/ComponentItem';
-import { Collapse, Typography } from 'antd';
+import {Collapse, Typography} from 'antd';
 import ComponentHeader from '../component-item/ComponentHeader';
 import './ComponentList.css';
-import { GetComponentDto } from '../../../models/component/get-component.dto';
+import {GetComponentDto} from '../../../models/component/get-component.dto';
 
 interface ComponentListProps {
 	components?: GetComponentDto[];
+	onDelete: (component: GetComponentDto) => void
+	onUpdate: (component: GetComponentDto) => void
 }
 
-const { Title } = Typography;
-const ComponentList: FC<ComponentListProps> = ({ components }) => {
+const {Title} = Typography;
+const ComponentList: FC<ComponentListProps> = ({components, onDelete, onUpdate}) => {
 	return (
 		<div className={'component-list'}>
-			<Title style={{ textAlign: 'center' }} level={4}>
+			<Title style={{textAlign: 'center'}} level={4}>
 				Список компонентов
 			</Title>
-			{components == null ? (
-				<Title style={{ textAlign: 'center' }} level={4}>
+			{!components?.length ? (
+				<Title style={{textAlign: 'center'}} level={4}>
 					Комплектующие не найдены
 				</Title>
 			) : (
@@ -26,7 +28,7 @@ const ComponentList: FC<ComponentListProps> = ({ components }) => {
 						<Collapse.Panel
 							showArrow={false}
 							key={component.id}
-							header={<ComponentHeader component={component} />}
+							header={<ComponentHeader onUpdate={onUpdate} onDelete={onDelete} component={component}/>}
 						>
 							<ComponentItem
 								key={component.id}

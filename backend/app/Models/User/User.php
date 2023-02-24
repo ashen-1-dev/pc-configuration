@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use HasRoles;
     use HasFactory, Notifiable;
     use HasApiTokens {
         createToken as originalCreateToken;
@@ -24,7 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'first_name',
-        'last_name'
+        'last_name',
+        'photo_url'
     ];
 
     /**
@@ -50,11 +52,6 @@ class User extends Authenticatable
     {
         $this->tokens()->delete();
         return $this->originalCreateToken($name, $abilities);
-    }
-
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
     }
 
     public function builds()

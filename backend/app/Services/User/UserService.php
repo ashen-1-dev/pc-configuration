@@ -22,7 +22,7 @@ class UserService
 
     public function getAuthUser()
     {
-        return GetUserDto::from(Auth::user()->load(['builds.components']));
+        return GetUserDto::from(Auth::user()->load(['builds', 'builds.components', 'roles']));
     }
 
     public function editUser(int $userId, EditUserDto $editUserDto): GetUserDto

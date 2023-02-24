@@ -3,6 +3,7 @@ export function getUrlQueryStringFromObject(params: any): string {
 		return '';
 	}
 	return Object.keys(params)
+		.filter(key => params[key] != undefined)
 		.map(
 			key =>
 				`${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`,

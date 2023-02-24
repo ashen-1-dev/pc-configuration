@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 abstract class Filter
 {
-
+    
     protected readonly object $filterFields;
 
     public function __construct(object $filterFields)

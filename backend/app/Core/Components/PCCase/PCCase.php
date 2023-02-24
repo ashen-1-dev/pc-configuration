@@ -3,6 +3,8 @@
 namespace App\Core\Components\PCCase;
 
 use App\Core\Components\Component;
+use App\Core\Components\Motherboard\MotherboardFormFactor;
+use App\Core\Components\PowerSupply\PowerSupplyFormFactor;
 
 class PCCase extends Component
 {
@@ -13,8 +15,8 @@ class PCCase extends Component
     {
         $this->name = 'case';
         $this->attributes = [
-            'form_factor' => [],
-            'motherboard_form_factor' => [],
+            'form_factor' => ['list' => array_keys(MotherboardFormFactor::formFactor)],
+            'powersupply_form_factor' => ['list' => array_keys(PowerSupplyFormFactor::formFactor)],
             'max_gpu_length' => [],
             'max_cpu_cooler_height' => [],
         ];
