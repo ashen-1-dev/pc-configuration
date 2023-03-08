@@ -15,20 +15,30 @@ class UserService
         return GetUserDto::collection(User::with(['builds'])->all())->toArray();
     }
 
-    public function getUser(int $id)
+    public function getUser(int $id): GetUserDto
     {
-        return GetUserDto::from(User::with(['builds'])->findOrFail($id));
+        $user = User::with(['builds'])->findOrFail($id);
+        return GetUserDto::fromModel($user);
     }
 
     public function getAuthUser()
     {
-        return GetUserDto::from(Auth::user()->load(['builds', 'builds.components', 'roles']));
+        $user = Auth::user()->load(['builds', 'builds.components', 'roles']);
+        return GetUserDto::fromModel($user);
     }
 
     public function editUser(int $userId, EditUserDto $editUserDto): GetUserDto
     {
         $user = User::findOrFail($userId);
         $user->update(array_filter($editUserDto->toArray()));
-        return GetUserDto::from($user);
+        if ($editUserDto->photo) {
+            $user->addAvatar($editUserDto->photo);
+        }
+
+        if ($editUserDto->photo == null) {
+            $user->removeAvatar();
+        }
+
+        return GetUserDto::fromModel($user->refresh());
     }
 }

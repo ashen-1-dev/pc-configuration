@@ -8,6 +8,7 @@ import {CreateComponentDto} from "../../../models/component/create-component.dto
 import {rules} from "../../../utils/form/rules";
 import ComponentTypeService from "../../../services/type/component-type.service";
 import {UploadOutlined} from "@ant-design/icons";
+import {dummyRequest} from "../../../utils/request";
 
 interface UpdateComponentFormProps {
 	component: GetComponentDto;
@@ -15,15 +16,7 @@ interface UpdateComponentFormProps {
 	onSuccess: () => void;
 }
 
-// @ts-expect-error
-const dummyRequest = ({onSuccess}): void => {
-	setTimeout(() => {
-		onSuccess('ok');
-	}, 0);
-};
-
 const UpdateComponentForm: FC<UpdateComponentFormProps> = ({component, form, onSuccess}) => {
-	console.log(component)
 	const {id, name, photoUrl, description, attributes, type} = component;
 	const client = useQueryClient();
 	const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -53,7 +46,6 @@ const UpdateComponentForm: FC<UpdateComponentFormProps> = ({component, form, onS
 		setSelectedType(type)
 	}, [])
 	const onFinish = (values: any): void => {
-		console.log('values', values);
 		const dto = convertDataToUpdateComponentDto(values);
 		updateComponent([id, dto]);
 		onSuccess();
@@ -78,12 +70,27 @@ const UpdateComponentForm: FC<UpdateComponentFormProps> = ({component, form, onS
 			<Form.Item name={'description'} label={'Описание'}>
 				<Input.TextArea size={'large'}/>
 			</Form.Item>
+			{/*<Row justify={'center'} style={{paddingBottom: '5px'}}>*/}
+			{/*	<Image*/}
+			{/*		style={{justifySelf: 'center'}}*/}
+			{/*		height={100}*/}
+			{/*		width={100}*/}
+			{/*		src={photoUrl}*/}
+			{/*	/>*/}
+			{/*</Row>*/}
 			<Form.Item
 				name={'photo'}
 				label={'Фото'}
 				getValueFromEvent={({file}) => file.originFileObj}
 			>
 				<Upload
+					defaultFileList={
+						[{
+							uid: '1',
+							name: component.name,
+							url: component.photoUrl,
+						}]
+					}
 					maxCount={1}
 					accept={'image/*'}
 					listType="picture" // @ts-expect-error

@@ -39,7 +39,7 @@ class RequiredAttributeSeeder extends Seeder
             'motherboard' => new Motherboard(),
         ];
         $result = [];
-        //FIXME: optimize
+
         foreach ($componentTypes as $componentType) {
             $attributes = $requiredAttributes[$componentType->name]->attributes;
             foreach ($attributes as $name => $attribute) {

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\User\dto;
 
+use Illuminate\Http\UploadedFile;
 use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Password;
+use Spatie\LaravelData\Attributes\Validation\Image;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -13,13 +14,13 @@ class EditUserDto extends \Spatie\LaravelData\Data
 {
     public function __construct(
         #[Email]
-        public ?string $email,
-        #[Password(min: 4)]
-        public ?string $password,
+        public ?string       $email,
         #[StringType]
-        public ?string $firstName,
+        public ?string       $firstName,
         #[StringType]
-        public ?string $lastName,
+        public ?string       $lastName,
+        #[Image]
+        public ?UploadedFile $photo,
     )
     {
     }

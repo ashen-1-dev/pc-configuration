@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
-import { GetComponentDto } from '../../../models/component/get-component.dto';
+import React, {FC} from 'react';
+import {GetComponentDto} from '../../../models/component/get-component.dto';
 import './ComponentItem.css';
-import { Col, Image, Row, Typography } from 'antd';
+import {Col, Image, Row, Typography} from 'antd';
 
 interface ComponentItemProps {
 	component: GetComponentDto;
 }
 
-const { Paragraph, Text, Title } = Typography;
+const {Paragraph, Text, Title} = Typography;
 
-const ComponentItem: FC<ComponentItemProps> = ({ component }) => {
-	const { name, description, id, type, photoUrl, attributes } = component;
+const ComponentItem: FC<ComponentItemProps> = ({component}) => {
+	const {name, description, id, type, photoUrl, attributes} = component;
 
 	return (
 		<Row>
@@ -38,7 +38,7 @@ const ComponentItem: FC<ComponentItemProps> = ({ component }) => {
 				</Typography>
 			</Col>
 			<Col>
-				<Image width={200} src={photoUrl} />
+				<Image width={200} src={photoUrl}/>
 			</Col>
 		</Row>
 	);

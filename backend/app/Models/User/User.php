@@ -3,18 +3,23 @@
 namespace App\Models\User;
 
 use App\Models\Build\Build;
+use App\Traits\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     use HasRoles;
     use HasFactory, Notifiable;
     use HasApiTokens {
         createToken as originalCreateToken;
     }
+    use HasAvatar;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -25,8 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'first_name',
-        'last_name',
-        'photo_url'
+        'last_name'
     ];
 
     /**
@@ -57,5 +61,12 @@ class User extends Authenticatable
     public function builds()
     {
         return $this->hasMany(Build::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection($this->avatarCollectionName)
+            ->singleFile();
     }
 }

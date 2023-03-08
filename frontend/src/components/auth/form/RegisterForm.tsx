@@ -6,13 +6,8 @@ import AuthServce from '../../../services/auth/AuthServce';
 import {RouteNames} from '../../../router';
 import {useNavigate} from 'react-router-dom';
 import {UploadOutlined} from "@ant-design/icons";
+import {dummyRequest} from '../../../utils/request';
 
-// @ts-ignore
-const dummyRequest = ({onSuccess}): void => {
-	setTimeout(() => {
-		onSuccess('ok');
-	}, 0);
-};
 
 const RegisterForm: FC = () => {
 	const navigate = useNavigate();
@@ -25,7 +20,7 @@ const RegisterForm: FC = () => {
 			navigate(RouteNames.MAIN);
 			window.location.reload();
 		},
-		onError: error => setError(error)
+		onError: () => setError('Ошибка')
 	});
 
 	const onFinish = (values: any): void => {
@@ -74,7 +69,7 @@ const RegisterForm: FC = () => {
 					maxCount={1}
 					accept={'image/*'}
 					listType="picture"
-					//@ts-expect-error
+					//@ts-ignore
 					customRequest={dummyRequest}
 				>
 					<Button icon={<UploadOutlined/>}>Загрузить</Button>

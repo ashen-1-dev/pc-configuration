@@ -35,7 +35,7 @@ class ComponentServiceImpl {
 	): Promise<GetComponentDto> {
 		const formData = serialize(updateComponentDto, {indices: true});
 		return await axiosInstance
-			.put<GetComponentDto>(`/components/${id}`, formData)
+			.post<GetComponentDto>(`/components/${id}`, formData)
 			.then(response => response.data);
 	}
 }

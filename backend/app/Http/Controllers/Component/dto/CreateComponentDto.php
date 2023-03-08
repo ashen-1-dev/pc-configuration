@@ -26,14 +26,13 @@ class CreateComponentDto extends Data
     {
     }
 
-    public function toModel(int $typeId, string $photoUrl = null): array
+    public function toModel(int $typeId): array
     {
         return [
             'name' => $this->name,
             'description' => $this->description,
             'type_id' => $typeId,
             'attributes' => $this->attributes->toArray(),
-            'photo_url' => $photoUrl,
         ];
     }
 }

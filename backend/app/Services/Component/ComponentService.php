@@ -3,23 +3,16 @@
 namespace App\Services\Component;
 
 use App\Http\Controllers\Component\dto\ComponentQuery;
+use App\Http\Controllers\Component\dto\CreateAttributeDto;
 use App\Http\Controllers\Component\dto\CreateComponentDto;
 use App\Http\Controllers\Component\dto\GetComponentDto;
 use App\Models\Component\Component;
 use App\Models\Component\Type;
-use App\Services\FileService;
 use Spatie\LaravelData\DataCollection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class ComponentService
 {
-    private readonly FileService $fileService;
-
-    public function __construct(FileService $fileService)
-    {
-        $this->fileService = $fileService;
-    }
-
     public function getComponents(ComponentQuery $componentQuery)
     {
         $components = Component::filter($componentQuery)
@@ -41,25 +34,31 @@ class ComponentService
         $typeId = Type::where('name', $createComponentDto->type)->firstOrFail()->id;
         $this->validateComponents($createComponentDto->attributes, $typeId);
 
-        $photoUrl = isset($createComponentDto->photo) ?
-            $this
-                ->fileService
-                ->uploadFile('/components/', $createComponentDto->photo)
-            : null;
-        $component = Component::create($createComponentDto->toModel($typeId, $photoUrl));
+
+        $component = Component::create($createComponentDto->toModel($typeId));
+
+        if ($createComponentDto->photo) {
+            $component->addAvatar($createComponentDto->photo);
+        }
+
         $component->attributes()->createMany($createComponentDto->attributes->toArray());
         return GetComponentDto::fromModel($component);
     }
 
     public function updateComponent(int $id, CreateComponentDto $createComponentDto): GetComponentDto
     {
-        //FIXME
         $component = Component::findOrFail($id);
         $component->update($createComponentDto->toArray());
-//        dd($createComponentDto->attributes->toArray());
-//        $createComponentDto
-//            ->attributes
-//            ->map(fn(CreateAttributeDto $x) => $component->attributes()->updateOrCreate($x->toArray()));
+
+        if ($createComponentDto->photo) {
+            $component->addAvatar($createComponentDto->photo);
+        } else {
+            $component->removeAvatar();
+        }
+
+        $createComponentDto
+            ->attributes
+            ->map(fn(CreateAttributeDto $x) => $component->attributes()->updateOrCreate($x->toArray()));
         return GetComponentDto::fromModel($component);
     }
 

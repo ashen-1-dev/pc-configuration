@@ -1,4 +1,2 @@
-public
-!public/
 !.gitignore
-/public/components
+/public/**

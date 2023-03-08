@@ -4,7 +4,7 @@ import AppRouter from './components/AppRouter';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {GetUserDto} from './models/user/get-user.dto';
 import AuthServce from './services/auth/AuthServce';
-import {getAuthToken, removeAuthToken} from "./utils/storage";
+import {getAuthToken} from "./utils/storage";
 
 const queryClient = new QueryClient();
 
@@ -15,14 +15,10 @@ const App: FC = () => {
 	const fetchUser = async () => {
 		return await AuthServce.authUser();
 	};
-	
+
 	useEffect(() => {
 		if (user != null) return;
-
-		getAuthToken() && fetchUser().then(response => setUser(response));
-		if (!user) {
-			removeAuthToken();
-		}
+		getAuthToken() && fetchUser().then(response => response && setUser(response));
 	}, []);
 
 	return (

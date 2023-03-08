@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('components')->group(function () {
     Route::get('/', [ComponentController::class, 'index']);
     Route::post('/', [ComponentController::class, 'store'])->middleware(['role:admin', 'auth:sanctum']);
-    Route::put('/{id}', [ComponentController::class, 'update'])->middleware(['role:admin', 'auth:sanctum']);;
+    Route::post('/{id}', [ComponentController::class, 'update'])->middleware(['role:admin', 'auth:sanctum']);;
     Route::delete('/{id}', [ComponentController::class, 'destroy'])->middleware(['role:admin', 'auth:sanctum']);;
 });
 
@@ -41,7 +41,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
 // USER
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::put('/user', [UserController::class, 'update']);
+    Route::post('/user', [UserController::class, 'update']);
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
     Route::get('/users/me', [UserController::class, 'getAuthUser']);

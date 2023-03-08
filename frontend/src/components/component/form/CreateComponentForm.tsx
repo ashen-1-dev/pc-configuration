@@ -7,18 +7,12 @@ import {UploadOutlined} from '@ant-design/icons';
 import ComponentService from '../../../services/component/ComponentService';
 import {convertDataToCreateComponentDto} from '../../../pages/component/helper';
 import {GetRequiredAttributesDto} from '../../../models/type/GetRequiredAttributes.dto';
+import {dummyRequest} from "../../../utils/request";
 
 interface CreateComponentFormProps {
 	form?: FormInstance;
 	onSuccess: () => void;
 }
-
-// @ts-expect-error
-const dummyRequest = ({onSuccess}): void => {
-	setTimeout(() => {
-		onSuccess('ok');
-	}, 0);
-};
 
 const CreateComponentForm: FC<CreateComponentFormProps> = ({
 															   form,
@@ -57,7 +51,6 @@ const CreateComponentForm: FC<CreateComponentFormProps> = ({
 	};
 
 	const onFinish = (values: any): void => {
-		console.log('values', values);
 		const dto = convertDataToCreateComponentDto(values);
 		mutate(dto);
 		onSuccess();

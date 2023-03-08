@@ -13,7 +13,7 @@ const UsersBuilds = () => {
 	const user = useContext(UserContext);
 	const [form] = Form.useForm();
 	const [query, setQuery] = useState<BuildQuery>({q: '', ready: 1});
-	const debouncedQuery = useDebounce(query, 1);
+	const debouncedQuery = useDebounce(query, 200);
 
 	useEffect(() => {
 		refetchBuilds();
@@ -35,6 +35,11 @@ const UsersBuilds = () => {
 		if (data.ready != null) {
 			data.ready = +data.ready
 		}
+
+		if (!data.ready) {
+			delete data.ready
+		}
+
 		setQuery(data)
 	}
 
@@ -77,28 +82,31 @@ const UsersBuilds = () => {
 							<Input placeholder={'Введите название...'}/>
 						</Form.Item>
 						<Form.Item
-							label={'Готовая сборка: '}
+							label={'Только готовые сборки: '}
 							name={'ready'}
+							initialValue={true}
 						>
 							<Switch defaultChecked/>
 						</Form.Item>
 					</Form>
 				</Row>
-				<Row style={{paddingTop: '20px'}} justify={'center'}>
+				<div style={{paddingTop: '20px', display: "flex", flexDirection: 'column'}}>
 					{
 						builds && builds.length
 							?
 							<>
-								<Typography.Title>Пользовательские сборки</Typography.Title>
+								<Typography.Title style={{alignSelf: 'center'}}>Пользовательские
+									сборки</Typography.Title>
 								<BuildList
 									onBuildAdd={onBuildAdd}
 									builds={builds.filter(x => x.user.id !== user?.id)}
 								/>
 							</>
 							:
-							<Typography.Title level={4}>Извините, сборки не найдены</Typography.Title>
+							<Typography.Title style={{alignSelf: 'center'}} level={4}>Извините, сборки не
+								найдены</Typography.Title>
 					}
-				</Row>
+				</div>
 			</div>
 		</MainLayout>
 	);

@@ -6,7 +6,7 @@ use File;
 use Illuminate\Http\UploadedFile;
 use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Mimes;
+use Spatie\LaravelData\Attributes\Validation\Image;
 use Spatie\LaravelData\Attributes\Validation\Password;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
@@ -24,8 +24,8 @@ class CreateUserDto extends \Spatie\LaravelData\Data
         public string                 $firstName,
         #[Required, StringType]
         public string                 $lastName,
-        #[\Spatie\LaravelData\Attributes\Validation\File, Mimes('jpg', 'png', 'jpeg')]
-        public File|UploadedFile|null $photo,
+        #[Image]
+        public File|UploadedFile|null $photo = null,
 
     )
     {
