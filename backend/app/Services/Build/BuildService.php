@@ -17,9 +17,9 @@ class BuildService
     /** @return GetBuildDto[] */
     public function getBuilds(BuildQuery $buildQuery): array
     {
-        $builds = Build::with(['components'])->get();
+        $builds = Build::filter($buildQuery)->with(['components', 'user'])->get();
 
-        return GetBuildDto::collection($builds)->toArray();
+        return GetBuildDto::fromModelCollection($builds)->toArray();
     }
 
     public function getBuild(int $id): GetBuildDto

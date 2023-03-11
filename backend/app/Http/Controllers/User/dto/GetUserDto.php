@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\User\dto;
 
-use App\Http\Controllers\Build\dto\GetBuildDto;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -19,8 +18,8 @@ class GetUserDto extends \Spatie\LaravelData\Data
         public string          $lastName,
         public string          $email,
         public ?string         $photoUrl,
-        #[DataCollectionOf(GetBuildDto::class)]
-        public ?DataCollection $builds,
+//        #[DataCollectionOf(GetBuildDto::class)]
+//        public ?DataCollection $builds,
         #[DataCollectionOf(GetRoleDto::class)]
         public ?DataCollection $roles
     )

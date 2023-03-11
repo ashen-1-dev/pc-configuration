@@ -29,8 +29,13 @@ class Component extends Model implements HasMedia
         'name',
         'description',
         'type_id',
-        'photo_url'
     ];
+
+    public function getPhotoUrlAttribute()
+    {
+        return $this->getAvatarUrl();
+    }
+
 
     public function builds()
     {

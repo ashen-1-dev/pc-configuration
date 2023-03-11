@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Component\dto;
 use App\Http\Controllers\Component\dto\Attribute\GetAttributeDto;
 use App\Models\Component\Component;
 use App\utils\transformers\InsertDomainUrl;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\WithTransformer;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
+#[MapInputName(SnakeCaseMapper::class)]
 class GetComponentDto extends Data
 {
     public function __construct(
@@ -25,6 +29,13 @@ class GetComponentDto extends Data
     {
     }
 
+    public static function fromModelCollection(Collection $components)
+    {
+        return GetComponentDto::collection(
+            $components->map(fn(Component $component) => self::fromModel($component))
+        );
+    }
+
     public static function fromModel(Component $component): GetComponentDto
     {
         return new self(
@@ -32,7 +43,7 @@ class GetComponentDto extends Data
             type: $component->type->name,
             name: $component->name,
             description: $component->description,
-            photoUrl: $component->photo_url,
+            photoUrl: $component->getAvatarUrl(),
             attributes: GetAttributeDto::collection($component->attributes->all())
         );
     }

@@ -52,6 +52,11 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    public function getPhotoUrlAttribute()
+    {
+        return $this->getAvatarUrl();
+    }
+
     public function createToken(string $name, array $abilities = ['*'])
     {
         $this->tokens()->delete();
