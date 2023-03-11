@@ -35,16 +35,6 @@ class Build extends Model
         return $this->belongsToMany(Component::class);
     }
 
-    public function addComponent($componentId)
-    {
-        $this->components()->attach($componentId);
-    }
-
-    public function removeComponent($componentId)
-    {
-        $this->components()->detach($componentId);
-    }
-
     public function scopeFilter(Builder $query, BuildQuery $buildQuery): Builder
     {
         return (new BuildFilter($buildQuery))->apply($query);
