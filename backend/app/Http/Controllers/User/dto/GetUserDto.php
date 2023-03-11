@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User\dto;
 
+use App\Http\Controllers\Build\dto\GetBuildDto;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -18,21 +19,25 @@ class GetUserDto extends \Spatie\LaravelData\Data
         public string          $lastName,
         public string          $email,
         public ?string         $photoUrl,
-//        #[DataCollectionOf(GetBuildDto::class)]
-//        public ?DataCollection $builds,
+        #[DataCollectionOf(GetBuildDto::class)]
+        public ?DataCollection $builds,
         #[DataCollectionOf(GetRoleDto::class)]
         public ?DataCollection $roles
     )
     {
     }
 
-    public static function fromModel(User|Model $user): static
+    public static function fromModel(User|Model $user, $withBuilds = true): GetUserDto
     {
-        return static::from($user, [
-            'photoUrl' => $user->getAvatarUrl(),
-            'roles' => $user->roles,
-            'builds' => $user->builds
-        ]);
+        return new GetUserDto(
+            id: $user->id,
+            firstName: $user->first_name,
+            lastName: $user->last_name,
+            email: $user->email,
+            photoUrl: $user->getAvatarUrl(),
+            builds: $withBuilds ? $user->builds : null,
+            roles: GetRoleDto::collection($user->roles)
+        );
     }
 }
 

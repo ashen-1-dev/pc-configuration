@@ -39,7 +39,7 @@ class GetBuildDto extends Data
             id: $build->id,
             name: $build->name,
             description: $build->description,
-            user: GetUserDto::from($build->user),
+            user: GetUserDto::fromModel($build->user, false),
             isReady: $build->is_ready,
             components: GetComponentDto::fromModelCollection($build->components),
         );
