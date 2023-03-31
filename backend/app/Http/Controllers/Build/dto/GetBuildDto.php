@@ -28,9 +28,9 @@ class GetBuildDto extends Data
     {
     }
 
-    public static function fromModelCollection(Collection $builds): Collection
+    public static function fromModelCollection(Collection $builds): DataCollection
     {
-        return $builds->map(fn(Build $build) => self::fromModel($build));
+        return GetBuildDto::collection($builds->map(fn(Build $build) => self::fromModel($build)));
     }
 
     public static function fromModel(Build|Model $build): GetBuildDto

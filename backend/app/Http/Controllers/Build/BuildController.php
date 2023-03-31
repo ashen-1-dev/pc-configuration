@@ -8,6 +8,7 @@ use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Http\Controllers\Controller;
 use App\Services\Build\BuildQuery;
 use App\Services\Build\BuildService;
+use Exception;
 use Illuminate\Http\Request;
 
 class BuildController extends Controller
@@ -39,7 +40,7 @@ class BuildController extends Controller
 
     public function destroy($id)
     {
-        return $this->buildService->removeBuild($id);
+        $this->buildService->removeBuild($id);
     }
 
     public function update(Request $request, int $id)
@@ -64,5 +65,15 @@ class BuildController extends Controller
     {
         $dto = RawBuildDto::from(['componentsIds' => $request->componentsIds]);
         return $this->buildService->checkBuildIsReady($dto);
+    }
+
+    public function createExcelReport(int $id)
+    {
+        try {
+            $url = $this->buildService->createExcelReport($id);
+            return \Response::download($url)->deleteFileAfterSend();
+        } catch (Exception) {
+            return \Response::json(['success' => false, 'message' => 'ошибка при генерации отчета']);
+        }
     }
 }

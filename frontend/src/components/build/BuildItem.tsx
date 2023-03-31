@@ -1,10 +1,13 @@
-import React, { FC, useContext, useState } from 'react';
-import { Button, Card, Image, List, Typography } from 'antd';
-import { getCheckBuildStatus } from '../../models/build-ready-status/check-build-status';
-import { GetBuildDto } from '../../models/build/get-build.dto';
-import { UserContext } from '../../App';
-import { GetComponentDto } from '../../models/component/get-component.dto';
+import React, {FC, useContext, useState} from 'react';
+import {Button, Card, Image, List, Tooltip, Typography} from 'antd';
+import {getCheckBuildStatus} from '../../models/build-ready-status/check-build-status';
+import {GetBuildDto} from '../../models/build/get-build.dto';
+import {UserContext} from '../../App';
+import {GetComponentDto} from '../../models/component/get-component.dto';
 import ComponentModal from '../component/component-item/ComponentModal';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faFileExcel} from '@fortawesome/free-solid-svg-icons/faFileExcel';
+import {axiosInstance} from "../../config/axios";
 
 interface BuildItemProps {
 	build: GetBuildDto;
@@ -14,11 +17,11 @@ interface BuildItemProps {
 }
 
 const BuildItem: FC<BuildItemProps> = ({
-	build,
-	onBuildDelete,
-	onBuildUpdate,
-	onBuildAdd,
-}) => {
+										   build,
+										   onBuildDelete,
+										   onBuildUpdate,
+										   onBuildAdd,
+									   }) => {
 	const user = useContext(UserContext);
 	const [isAdded, setIsAdded] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,25 +48,33 @@ const BuildItem: FC<BuildItemProps> = ({
 	};
 
 	return (
-		<div style={{ padding: '0 50px' }}>
+		<div style={{padding: '0 50px'}}>
 			<Typography.Title level={4}>{build.name}</Typography.Title>
 			<Typography.Text italic>
 				{getCheckBuildStatus(build.isReady)}
 			</Typography.Text>
-			<br />
+			<br/>
 			<Typography.Paragraph>{build.description}</Typography.Paragraph>
 			<Typography.Paragraph>
 				Автор сборки: {build.user.firstName} {build.user.email}
 			</Typography.Paragraph>
 			<div>
 				{build.user.id === user?.id ? (
-					<div>
+					<div style={{display: "flex", flexDirection: 'row', alignItems: 'center'}}>
 						<Button onClick={() => handleOnDelete(build)}>
 							Удалить
 						</Button>
 						<Button onClick={() => handleOnUpdate(build)}>
 							Изменить
 						</Button>
+						<a href={`${axiosInstance.defaults.baseURL}/builds/${build.id}/create-report`}
+						   target={'_blank'}
+						   style={{paddingLeft: '5px', cursor: 'pointer'}}>
+							<Tooltip title="Скачать отчет формате Excel">
+								<FontAwesomeIcon size={"xl"} icon={faFileExcel} style={{color: "#37c889"}}/>
+							</Tooltip>
+
+						</a>
 					</div>
 				) : (
 					<div>
@@ -74,7 +85,7 @@ const BuildItem: FC<BuildItemProps> = ({
 						) : (
 							<Button
 								disabled
-								style={{ backgroundColor: '#52c41a' }}
+								style={{backgroundColor: '#52c41a'}}
 							>
 								Добавлено
 							</Button>
@@ -83,12 +94,12 @@ const BuildItem: FC<BuildItemProps> = ({
 				)}
 			</div>
 			<List
-				grid={{ column: build.components.length }}
+				grid={{column: build.components.length}}
 				dataSource={build.components}
 				renderItem={component => (
 					<List.Item onClick={() => onComponentClick(component)}>
 						<Card
-							style={{ cursor: 'pointer' }}
+							style={{cursor: 'pointer'}}
 							title={component.name}
 						>
 							<Image

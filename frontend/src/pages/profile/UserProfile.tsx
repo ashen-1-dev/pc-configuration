@@ -27,6 +27,7 @@ const UserProfile: FC = () => {
 	}
 
 	const onUserUpdateFormSubmit = (data: UpdateUserDto) => {
+		console.log(data)
 		updateUser(data);
 		setButtonActive(false);
 		navigate(0);

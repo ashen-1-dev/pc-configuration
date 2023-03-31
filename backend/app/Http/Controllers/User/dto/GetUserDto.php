@@ -35,7 +35,7 @@ class GetUserDto extends \Spatie\LaravelData\Data
             lastName: $user->last_name,
             email: $user->email,
             photoUrl: $user->getAvatarUrl(),
-            builds: $withBuilds ? $user->builds : null,
+            builds: $withBuilds ? GetBuildDto::fromModelCollection($user->builds) : null,
             roles: GetRoleDto::collection($user->roles)
         );
     }

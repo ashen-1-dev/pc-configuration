@@ -10,10 +10,14 @@ use App\Http\Controllers\Build\dto\RawBuildDto;
 use App\Models\Build\Build;
 use App\Models\User\User;
 use Illuminate\Validation\ValidationException;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class BuildService
 {
+    const reportLifetimeMinutes = 5;
+
     /** @return GetBuildDto[] */
     public function getBuilds(BuildQuery $buildQuery): array
     {
@@ -84,6 +88,44 @@ class BuildService
     {
         $checker = new BuildChecker();
         return $checker->checkBuildIsReady($getBuildDto);
+    }
+
+    public function createExcelReport(int $id): string
+    {
+        $build = Build::findOrFail($id);
+
+        $spreadsheet = new Spreadsheet();
+        $activeWorksheet = $spreadsheet->getActiveSheet();
+        $activeWorksheet->setTitle('Сборка #' . $build->id);
+
+
+        $report = [
+            ['Название сборки', $build->name],
+            ['Описание сборки', $build->description],
+            ['Автор сборки', $build->user->first_name . ', ' . $build->user->email],
+            ['Готовая сборка', $build->is_ready ? 'Да' : 'Нет'],
+            ['', ''],
+            ['Список комплектующих', ''],
+        ];
+
+        foreach ($build->components as $component) {
+            $report[] = [$component->type->name, $component->name];
+        }
+
+        $report[] = ['', ''];
+        $report[] = ['Отчет сгенерирован в приложенни', \Config::get('app.name')];
+        $report[] = ['', \Config::get('app.url')];
+
+        $activeWorksheet->fromArray($report);
+
+        $activeWorksheet->getColumnDimension('A')->setAutoSize(true);
+        $activeWorksheet->getColumnDimension('B')->setAutoSize(true);
+
+        $writer = new Xlsx($spreadsheet);
+        $path = base_path() . '/storage/app/public/reports/report_' . $build->id . '_' . now()->timestamp . '.xlsx';
+        $writer->save($path);
+
+        return $path;
     }
 
 }

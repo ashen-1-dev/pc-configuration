@@ -55,7 +55,29 @@ Route::prefix('builds')->group(function () {
     Route::post('/', [BuildController::class, 'store'])->middleware(['auth:sanctum']);
     Route::put('/{id}', [BuildController::class, 'update'])->middleware(['auth:sanctum']);
     Route::delete('/{id}', [BuildController::class, 'destroy'])->middleware(['auth:sanctum']);
-    Route::get('/builds/{id}/add', [BuildController::class, 'addBuildToUser'])->middleware(['auth:sanctum']);
-    Route::post('/builds/check', [BuildController::class, 'checkBuildIsReady'])->middleware(['auth:sanctum']);
+    Route::get('/{id}/add', [BuildController::class, 'addBuildToUser'])->middleware(['auth:sanctum']);
+    Route::post('/check', [BuildController::class, 'checkBuildIsReady'])->middleware(['auth:sanctum']);
+    Route::get('/{id}/create-report', [BuildController::class, 'createExcelReport']);
+//        ->middleware(['auth:sanctum']);
 });
 Route::get('/users/builds/my', [BuildController::class, 'getAuthUserBuilds'])->middleware(['auth:sanctum']);
+
+
+Route::get('/test', function () {
+    $service = new \App\Services\Build\BuildService();
+    return $service->createExcelReport(1);
+});
+
+Route::get('tmp-files', function (\Illuminate\Http\Request $request) {
+    $filePath = $request->input('filePath');
+    if (!\request()->hasValidSignature() && $filePath) {
+        abort(401);
+    }
+    try {
+        return Response::download(storage_path('/app/' . $filePath))
+            ->deleteFileAfterSend($request->input('deleteAfterDownload') ?? false);
+    } catch (Exception) {
+        return response()->json(['status' => false, 'message' => 'ошибка при загрузки файла'], 500);
+    }
+
+})->name('local.temp');
