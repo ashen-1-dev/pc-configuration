@@ -11,7 +11,6 @@ const {Paragraph, Text, Title} = Typography;
 
 const ComponentItem: FC<ComponentItemProps> = ({component}) => {
 	const {name, description, id, type, photoUrl, attributes} = component;
-
 	return (
 		<Row>
 			<Col span={16}>

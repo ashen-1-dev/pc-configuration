@@ -34,7 +34,7 @@ class ComponentController extends Controller
         } catch (\Exception $exception) {
             return $exception;
         }
-        return $this->componentService->createComponent($dto);
+        return response()->json($this->componentService->createComponent($dto), 201);
     }
 
     public function update(Request $request, int $id)

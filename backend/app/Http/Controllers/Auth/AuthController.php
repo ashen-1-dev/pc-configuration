@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $dto = CreateUserDto::from($request);
-        return $this->authService->register($dto);
+        return response()->json($this->authService->register($dto), 201);
     }
 
     public function login(Request $request)

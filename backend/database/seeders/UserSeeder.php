@@ -19,10 +19,9 @@ class UserSeeder extends Seeder
             'first_name' => 'Никита',
             'last_name' => 'Лепейкин',
             'email' => 'alen2014@gmail.com',
-            'photo_url' => '/storage/default-user-avatar.png',
             'password' => Hash::make('123123'),
-
         ];
+
         (User::firstOrCreate($admin))->addRoles(['admin', 'user']);
     }
 }

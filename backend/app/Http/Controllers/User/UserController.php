@@ -21,7 +21,7 @@ class UserController extends Controller
     {
         $id = Auth::id();
         $dto = EditUserDto::from($request);
-        return $this->userService->editUser($id, $dto);
+        return response()->json($this->userService->editUser($id, $dto), 200);
     }
 
     public function index()

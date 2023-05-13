@@ -64,7 +64,7 @@ class BuildController extends Controller
     public function checkBuildIsReady(Request $request)
     {
         $dto = RawBuildDto::from(['componentsIds' => $request->componentsIds]);
-        return $this->buildService->checkBuildIsReady($dto);
+        return response()->json($this->buildService->checkBuildIsReady($dto), 200);
     }
 
     public function createExcelReport(int $id)

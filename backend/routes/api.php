@@ -63,11 +63,6 @@ Route::prefix('builds')->group(function () {
 Route::get('/users/builds/my', [BuildController::class, 'getAuthUserBuilds'])->middleware(['auth:sanctum']);
 
 
-Route::get('/test', function () {
-    $service = new \App\Services\Build\BuildService();
-    return $service->createExcelReport(1);
-});
-
 Route::get('tmp-files', function (\Illuminate\Http\Request $request) {
     $filePath = $request->input('filePath');
     if (!\request()->hasValidSignature() && $filePath) {

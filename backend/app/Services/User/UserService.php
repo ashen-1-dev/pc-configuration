@@ -12,7 +12,7 @@ class UserService
     /** @return GetUserDto[] */
     public function getUsers()
     {
-        return GetUserDto::collection(User::with(['builds'])->all())->toArray();
+        return GetUserDto::collection(User::with(['builds'])->get())->toArray();
     }
 
     public function getUser(int $id): GetUserDto

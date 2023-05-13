@@ -26,8 +26,7 @@ trait HasAvatar
 
     public function getAvatarUrl(): string|null
     {
-        $url = $this->getMedia($this->avatarCollectionName)->first()?->getUrl();
-
+        $url = $this->getFirstMediaUrl($this->avatarCollectionName);
         if (!$url && $this->hasDefaultAvatar) {
             $url = URL::to('/') . $this->defaultAvatarUrl;
         }
