@@ -169,7 +169,7 @@ class Checkers
         }
 
         $powerSupplyCPUSocket = $ps->attributes->where('name', '=', 'cpu_power_socket')->first()->value;
-        $motherboardCPUPowerSocket = $motherboard->attributes->where('name', '=', 'cpu_power_socket')->first()->value;
+        $motherboardCPUPowerSocket = $motherboard->attributes->where('name', '=', 'power_supply_cpu_socket')->first()->value;
 
         if ($powerSupplyCPUSocket != $motherboardCPUPowerSocket) {
             $checkerResult->isCompatible = false;
