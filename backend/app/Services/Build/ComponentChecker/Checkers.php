@@ -215,7 +215,7 @@ class Checkers
     {
         $caseFormFactor = $case
             ->attributes
-            ->where('name', '=', 'motherboard_form_factor')
+            ->where('name', '=', 'form_factor')
             ->first()
             ->value;
         $motherboardFormFactor = $motherboard
