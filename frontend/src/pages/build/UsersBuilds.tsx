@@ -8,6 +8,7 @@ import BuildList from '../../components/build/BuildList';
 import {UserContext} from '../../App';
 import useDebounce from "../../hooks/useDebounce";
 import {BuildQuery} from "../../models/build/build.query";
+import {RouteNames} from "../../router";
 
 const UsersBuilds = () => {
 	const user = useContext(UserContext);
@@ -53,6 +54,10 @@ const UsersBuilds = () => {
 	const [addBuildId, setAddBuildId] = useState(0);
 
 	const onBuildAdd = (build: GetBuildDto) => {
+		if (!user) {
+			// @ts-ignore
+			window.location = RouteNames.LOGIN;
+		}
 		setAddBuildId(build.id);
 	};
 
